@@ -1,4 +1,4 @@
-# Analisador de requisitos de vagas
+# JobInsight
 
 Chatbot web que, a partir de um cargo ou área, busca vagas relacionadas e mostra os requisitos que mais aparecem nelas, com o percentual de vagas em que cada um é citado.
 
