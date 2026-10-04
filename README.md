@@ -20,7 +20,8 @@ Exemplo: ao buscar `desenvolvedor Kotlin jr`, você vê quais tecnologias, difer
 ## Instalação
 
 ```bash
-cd projeto-vagas
+git clone https://github.com/Gabrielhanel/job-insight-chat.git
+cd cd job-insight-chat
 python3 -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
