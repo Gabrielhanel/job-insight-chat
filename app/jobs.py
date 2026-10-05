@@ -42,12 +42,12 @@ def _credenciais() -> tuple[str, dict]:
     raise ErroVagas(500, "Defina OPENWEBNINJA_API_KEY no .env.")
 
 
-async def _adzuna(cargo: str, pais: str, paginas: int) -> tuple[list[dict], dict]:
+async def _adzuna(cargo: str, pais: str, paginas: int, inicio: int) -> tuple[list[dict], dict]:
     if not (os.getenv("ADZUNA_APP_ID") and os.getenv("ADZUNA_APP_KEY")):
         raise ErroVagas(500, "Defina ADZUNA_APP_ID e ADZUNA_APP_KEY no .env.")
     brutas = []
     async with httpx.AsyncClient(timeout=60) as client:
-        for pagina in range(1, paginas + 1):
+        for pagina in range(inicio, inicio + paginas):
             r = await client.get(
                 ADZUNA_URL.format(pais=pais, pagina=pagina),
                 params={
@@ -70,7 +70,7 @@ async def _adzuna(cargo: str, pais: str, paginas: int) -> tuple[list[dict], dict
     return brutas, {"paginas_ok": paginas, "paginas_total": paginas, "do_cache": 0}
 
 
-async def _jsearch(cargo: str, pais: str, paginas: int) -> tuple[list[dict], dict]:
+async def _jsearch(cargo: str, pais: str, paginas: int, inicio: int) -> tuple[list[dict], dict]:
     url, headers = _credenciais()
     base = cargo.lower().strip()
 
@@ -98,7 +98,7 @@ async def _jsearch(cargo: str, pais: str, paginas: int) -> tuple[list[dict], dic
 
     async with httpx.AsyncClient(timeout=60) as client:
         res = await asyncio.gather(
-            *(pagina(client, n) for n in range(1, paginas + 1)), return_exceptions=True
+            *(pagina(client, n) for n in range(inicio, inicio + paginas)), return_exceptions=True
         )
     ok = [r for r in res if not isinstance(r, Exception)]
     if not ok:
@@ -127,17 +127,24 @@ def _limpar(brutas: list[dict]) -> list[dict]:
         if chave in vistos or len(desc) < 150:
             continue
         vistos.add(chave)
-        vagas.append({"titulo": titulo, "empresa": empresa, "descricao": desc[:6000], "link": v["link"]})
+        vagas.append(
+            {"id": "|".join(chave), "titulo": titulo, "empresa": empresa, "descricao": desc[:6000], "link": v["link"]}
+        )
     return vagas
 
 
-async def buscar_vagas(cargo: str, pais: str = "br", paginas: int | None = None) -> tuple[list[dict], dict]:
-    """PROVEDOR=adzuna (padrão) ou jsearch. Devolve (vagas, info de páginas/cache)."""
+async def buscar_vagas(
+    cargo: str, pais: str = "br", paginas: int | None = None, inicio: int = 1
+) -> tuple[list[dict], dict]:
+    """PROVEDOR=adzuna (padrão) ou jsearch. Cobre as páginas [inicio, inicio + paginas)."""
     try:
         if os.getenv("PROVEDOR", "adzuna") == "jsearch":
-            brutas, info = await _jsearch(cargo, pais, paginas or 3)  # ~10 vagas por página
+            paginas = paginas or 3  # ~10 vagas por página
+            brutas, info = await _jsearch(cargo, pais, paginas, inicio)
         else:
-            brutas, info = await _adzuna(cargo, pais, paginas or 1)  # até 50 vagas por página
+            paginas = paginas or 1  # até 50 vagas por página
+            brutas, info = await _adzuna(cargo, pais, paginas, inicio)
     except (httpx.HTTPError, ErroVagas) as e:
         raise _converter(e)
+    info |= {"ultima_pagina": inicio + paginas - 1, "total_bruto": len(brutas)}
     return _limpar(brutas), info

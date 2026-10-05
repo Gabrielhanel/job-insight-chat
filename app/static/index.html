@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>JobInsight</title>
+<title>Requisitos de vagas</title>
 <style>
 :root{--on:#fff;--warn:#b45309;--bg:#f6f7f9;--card:#fff;--txt:#1d2230;--mut:#677084;--bd:#e2e5ec;--acc:#2563eb;--bar:#dbe6fd}
 @media(prefers-color-scheme:dark){:root{--on:#0b1220;--warn:#fbbf24;--bg:#14161c;--card:#1d2029;--txt:#e8eaf0;--mut:#9aa3b5;--bd:#2c303c;--acc:#6b9bff;--bar:#27304a}}
@@ -19,7 +19,7 @@ header{padding:14px 20px;border-bottom:1px solid var(--bd);background:var(--card
 .bot h4{margin:16px 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
 .lead{margin:0;font-weight:600}
 .row{display:grid;grid-template-columns:130px 1fr 78px;align-items:center;gap:10px;margin:5px 0;font-size:14px}
-.row .name{  white-space:normal; overflow-wrap:anywhere;}
+.row .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .track{height:10px;background:var(--bar);border-radius:5px;overflow:hidden}
 .fill{height:100%;background:var(--acc);border-radius:5px}
 .pct{text-align:right;color:var(--mut);font-size:13px;white-space:nowrap}
@@ -45,7 +45,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 </style>
 </head>
 <body>
-<header>JobInsight</header>
+<header>Requisitos mais pedidos em vagas</header>
 <div id="chat" role="log" aria-live="polite"></div>
 <form id="form"><div class="bar">
   <input id="q" aria-label="Cargo ou área" placeholder="Cargo ou área (ex.: desenvolvedor Kotlin jr)" autocomplete="off" autofocus>
@@ -86,7 +86,7 @@ function bars(box, titulo, itens, n) {
   });
 }
 function render(box, d) {
-  box.appendChild(el('p', 'lead', `Analisei ${d.vagas_analisadas} vagas para “${d.cargo}”.`));
+  box.appendChild(el('p', 'lead', `${d.novas ? 'Encontrei ' + d.vagas_analisadas + ' vagas novas' : 'Analisei ' + d.vagas_analisadas + ' vagas'} para “${d.cargo}”.`));
   bars(box, 'Tecnologias mais pedidas', d.tecnologias, 10);
   bars(box, 'Diferenciais', d.diferenciais, 5);
   if (d.soft_skills && d.soft_skills.length) {
@@ -137,6 +137,10 @@ function extras(box, d) {
     setTimeout(() => c.textContent = 'Copiar resumo', 1500);
   });
   box.appendChild(c);
+  const n = el('button', 'sec novas', 'Buscar novas vagas');
+  n.type = 'button';
+  n.onclick = () => buscar(d.cargo, true);
+  box.appendChild(n);
 }
 async function status() {
   try {
@@ -156,17 +160,17 @@ const ex = el('div', 'ex');
 });
 hello.appendChild(ex);
 hist.forEach(h => { add('user').textContent = h.q; const b = add('bot'); render(b, h.d); extras(b, h.d); });
+// só a última resposta mantém o botão "Buscar novas vagas"
+document.querySelectorAll('.novas').forEach((b, i, todos) => { if (i < todos.length - 1) b.remove(); });
 status();
 
 let ctrl = null;
 cancel.onclick = () => ctrl && ctrl.abort();
 
-form.onsubmit = async e => {
-  e.preventDefault();
-  const texto = q.value.trim();
-  if (!texto) return;
-  q.value = '';
-  add('user').textContent = texto;
+async function buscar(texto, novas = false) {
+  document.querySelectorAll('.novas').forEach(b => b.remove());
+  const rotulo = novas ? `Buscar novas vagas: ${texto}` : texto;
+  add('user').textContent = rotulo;
   const bot = add('bot');
   const t0 = Date.now();
   bot.textContent = 'Buscando vagas e analisando requisitos…';
@@ -180,16 +184,20 @@ form.onsubmit = async e => {
     const r = await fetch('/chat', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({mensagem: texto, pais: 'br', paginas: +pages.value}),
+      body: JSON.stringify({mensagem: texto, pais: 'br', paginas: +pages.value, apenas_novas: novas}),
       signal: ctrl.signal,
     });
     const j = await r.json();
     if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail));
     bot.textContent = '';
-    render(bot, j.dados);
-    extras(bot, j.dados);
-    hist.push({q: texto, d: j.dados});
-    salvar();
+    if (j.dados.sem_novas) {
+      bot.textContent = j.dados.aviso;
+    } else {
+      render(bot, j.dados);
+      extras(bot, j.dados);
+      hist.push({q: rotulo, d: j.dados});
+      salvar();
+    }
   } catch (err) {
     bot.classList.add('err');
     bot.textContent = err.name === 'AbortError' ? 'Busca cancelada.' : 'Erro: ' + err.message;
@@ -201,6 +209,14 @@ form.onsubmit = async e => {
     q.focus();
     status();
   }
+}
+
+form.onsubmit = e => {
+  e.preventDefault();
+  const texto = q.value.trim();
+  if (!texto) return;
+  q.value = '';
+  buscar(texto);
 };
 </script>
 </body>

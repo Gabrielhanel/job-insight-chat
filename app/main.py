@@ -13,8 +13,9 @@ from pydantic import BaseModel, Field  # noqa: E402
 
 from app import cache  # noqa: E402
 from app.aggregate import agregar  # noqa: E402
+from app.busca import coletar  # noqa: E402
 from app.extract import extrair_todas  # noqa: E402
-from app.jobs import ErroVagas, buscar_vagas  # noqa: E402
+from app.jobs import ErroVagas  # noqa: E402
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("vagas")
@@ -37,19 +38,25 @@ class Pergunta(BaseModel):
     pais: str = "br"
     # Cada página = 1 requisição na cota. Vazio = padrão do provedor.
     paginas: int | None = Field(None, ge=1, le=5)
+    apenas_novas: bool = False  # True: só vagas ainda não exibidas para esta consulta
 
 
-async def analisar(cargo: str, pais: str, paginas: int | None = None) -> dict:
+MSG_SEM_NOVAS = "Não localizamos novas vagas semelhantes à descrição solicitada."
+
+
+async def analisar(cargo: str, pais: str, paginas: int | None = None, apenas_novas: bool = False) -> dict:
     chave = (cargo.lower().strip(), pais, paginas)
-    hit = _cache.get(chave)
+    hit = None if apenas_novas else _cache.get(chave)  # buscas por novidades nunca usam este cache
     if hit and time.time() - hit[0] < TTL:
         return hit[1]
 
     try:
-        vagas, info = await buscar_vagas(cargo, pais, paginas)
+        vagas, info = await coletar(cargo, pais, paginas, apenas_novas)
     except ErroVagas as e:
         raise HTTPException(e.status, e.msg)
     if not vagas:
+        if apenas_novas:
+            return {"cargo": cargo, "sem_novas": True, "aviso": MSG_SEM_NOVAS}
         raise HTTPException(404, "Nenhuma vaga encontrada para essa busca.")
 
     extracoes, metodo = await extrair_todas(vagas)
@@ -63,12 +70,14 @@ async def analisar(cargo: str, pais: str, paginas: int | None = None) -> dict:
     resultado = {
         "cargo": cargo,
         **agregar(extracoes),
+        "novas": apenas_novas,
         "metodo": metodo,
         "avisos": avisos,
         "do_cache": info["do_cache"],
         "vagas": [{"titulo": v["titulo"], "empresa": v["empresa"], "link": v["link"]} for v in vagas],
     }
-    _cache[chave] = (time.time(), resultado)
+    if not apenas_novas:
+        _cache[chave] = (time.time(), resultado)
     return resultado
 
 
@@ -109,8 +118,8 @@ async def status():
 
 @app.post("/chat")
 async def chat(p: Pergunta):
-    r = await analisar(p.mensagem, p.pais, p.paginas)
-    return {"resposta": formatar(r), "dados": r}
+    r = await analisar(p.mensagem, p.pais, p.paginas, p.apenas_novas)
+    return {"resposta": r["aviso"] if r.get("sem_novas") else formatar(r), "dados": r}
 
 
 @app.get("/analisar")
