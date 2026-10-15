@@ -10,7 +10,11 @@
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{display:flex;flex-direction:column;background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-header{padding:14px 20px;border-bottom:1px solid var(--bd);background:var(--card);font-weight:600}
+header{flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--bd);background:var(--card);font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:12px}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:transparent;color:var(--acc);border:1px solid var(--bd);font-weight:400;padding:4px 12px;border-radius:999px;font-size:13px}
+nav button[aria-current="page"]{background:var(--acc);color:var(--on);border-color:var(--acc);font-weight:600}
+[hidden]{display:none!important}
 #chat{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;max-width:820px;width:100%;margin:0 auto}
 .msg{max-width:100%;padding:12px 16px;border-radius:14px;overflow-wrap:anywhere}
 .user{align-self:flex-end;background:var(--acc);color:var(--on);max-width:80%}
@@ -41,11 +45,126 @@ button:disabled{opacity:.5;cursor:wait}
 .ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.ex button{background:transparent;color:var(--acc);border:1px solid var(--bd);font-weight:400;padding:4px 10px;border-radius:999px;font-size:13px}
 .aviso{margin:10px 0 0;font-size:13px;color:var(--warn)}
 .sec{background:transparent;color:var(--acc);border:1px solid var(--bd);margin-top:12px;padding:6px 12px;font-size:13px;font-weight:400}
+.tela{flex:1;overflow-y:auto;padding:20px;max-width:820px;width:100%;margin:0 auto}
+.tela .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.tela label{font-size:13px;font-weight:600;color:var(--mut)}
+.tela .linha{display:flex;gap:8px}
+.tela .chip{display:inline-flex;align-items:center;gap:6px;padding:3px 4px 3px 10px;overflow-wrap:anywhere}
+.tela .chip button{background:transparent;color:var(--mut);border:0;padding:0 6px;border-radius:999px;font-size:15px;line-height:1.2}
+.tela .chip button:hover{color:var(--txt)}
+.tela .vazio,.tela .contador{color:var(--mut);font-size:13px;margin:0}
+.tela .status{margin:0;font-size:13px;min-height:1.5em}
+.tela .status.ok{color:#15803d}
+.tela .status.erro{color:#d33}
+.tela .acoes{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+@media(prefers-color-scheme:dark){.tela .status.ok{color:#4ade80}}
+.tela h3{margin:0;font-size:15px}
+.tela h4{margin:14px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+.vaga{border:1px solid var(--bd);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;overflow-wrap:anywhere;background:var(--bg)}
+.vaga .sub,.rotulo,.tela .nota{color:var(--mut);font-size:13px;margin:0}
+.badge{display:inline-block;align-self:flex-start;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:600;background:var(--bar)}
+.badge.nd{background:transparent;border:1px dashed var(--mut);color:var(--mut);font-weight:400}
+.tela .chip.ok{border-color:#15803d}
+.tela .chip.falta{border-style:dashed}
+.lac{display:flex;flex-direction:column;gap:2px;padding:6px 0;border-top:1px solid var(--bd);overflow-wrap:anywhere}
+.lac:first-of-type{border-top:0}
+.tela .aviso{margin:4px 0 0}
+.tela select{max-width:100%}
+.lista{display:flex;flex-direction:column;gap:10px}
+.tela .chip .editar{font-size:12px}
+.tabwrap{overflow-x:auto;max-width:100%}
+table.tab{border-collapse:collapse;width:100%;font-size:13px}
+.tab th,.tab td{border-bottom:1px solid var(--bd);padding:6px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.tab th{color:var(--mut);font-weight:600}
+.tab small{display:block;color:var(--mut)}
+.tela ol,.tela ul{margin:4px 0 8px;padding-left:20px;overflow-wrap:anywhere}
+.tela details{margin-top:10px}
+.tela summary{cursor:pointer;color:var(--acc)}
+.badge.ind{background:transparent;border:1px dashed var(--mut);color:var(--mut);font-weight:400;font-size:12px;padding:0 8px;margin-left:6px}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 </style>
 </head>
 <body>
-<header>Requisitos mais pedidos em vagas</header>
+<header>
+  <span>Requisitos mais pedidos em vagas</span>
+  <nav aria-label="Navegação principal">
+    <button type="button" id="nav-vagas" aria-current="page">Vagas</button>
+    <button type="button" id="nav-hab">Vagas por habilidades</button>
+    <button type="button" id="nav-evo">Evolução por senioridade</button>
+    <button type="button" id="nav-perfil">Perfil</button>
+  </nav>
+</header>
+<main id="perfil" class="tela" hidden aria-labelledby="perfil-titulo">
+  <div class="card">
+    <h2 id="perfil-titulo" style="margin:0;font-size:17px">Perfil</h2>
+    <p class="status" id="p-status" role="status" aria-live="polite"></p>
+    <div id="p-corpo" hidden>
+      <label for="p-nome">Nome (opcional)</label>
+      <input id="p-nome" autocomplete="off" placeholder="Como você quer ser chamado">
+      <label for="p-area" style="display:block;margin-top:14px">Áreas de conhecimento</label>
+      <div class="linha">
+        <input id="p-area" autocomplete="off" placeholder="Ex.: Desenvolvimento Mobile, Ciência de Dados…">
+        <button type="button" id="p-add">Adicionar</button>
+      </div>
+      <p class="contador" id="p-contador"></p>
+      <div class="chips" id="p-chips" style="margin-top:8px"></div>
+      <p class="vazio" id="p-vazio">Nenhuma área cadastrada ainda.</p>
+      <p class="contador" id="p-quando" style="margin-top:10px"></p>
+    </div>
+    <div class="acoes">
+      <button type="button" id="p-salvar" disabled>Salvar</button>
+      <button type="button" id="p-recarregar" class="sec" style="margin:0" hidden>Tentar carregar de novo</button>
+      <button type="button" id="p-voltar" class="sec" style="margin:0">← Voltar às vagas</button>
+    </div>
+  </div>
+</main>
+<main id="hab" class="tela" hidden aria-labelledby="hab-titulo">
+  <div class="card">
+    <h2 id="hab-titulo" style="margin:0;font-size:17px">Vagas por habilidades</h2>
+    <p class="nota">Informe o que você já sabe; o sistema busca vagas, compara os requisitos com a sua lista e mostra o que ainda não consta no seu perfil.</p>
+    <p class="status" id="h-status" role="status" aria-live="polite"></p>
+    <label for="h-input">Suas habilidades</label>
+    <div class="linha">
+      <input id="h-input" autocomplete="off" placeholder="Ex.: JavaScript, React Native, SQL, Docker…">
+      <button type="button" id="h-add">Adicionar</button>
+    </div>
+    <p class="contador" id="h-contador"></p>
+    <div class="chips" id="h-chips"></div>
+    <p class="vazio" id="h-vazio">Nenhuma habilidade na lista. Adicione ao menos uma para buscar (por exemplo: Python, React, SQL).</p>
+    <p class="nota">A busca usa a lista acima, mesmo sem salvar. Salvar guarda a lista no seu perfil local.</p>
+    <label for="h-area" style="margin-top:6px">Área de interesse (opcional, contexto da consulta)</label>
+    <select id="h-area" aria-label="Área de interesse"><option value="">Sem área: só as habilidades</option></select>
+    <label for="h-paginas">Páginas por consulta</label>
+    <select id="h-paginas" aria-label="Páginas por consulta"><option value="1">1 página</option><option value="2">2 páginas</option><option value="3">3 páginas</option></select>
+    <p class="nota" id="h-estimativa"></p>
+    <div class="acoes">
+      <button type="button" id="h-buscar">Buscar vagas</button>
+      <button type="button" id="h-salvar" class="sec" style="margin:0" disabled>Salvar habilidades</button>
+      <button type="button" id="h-recarregar" class="sec" style="margin:0" hidden>Tentar carregar de novo</button>
+      <button type="button" id="h-voltar" class="sec" style="margin:0">← Voltar às vagas</button>
+    </div>
+  </div>
+  <div id="h-resultado" class="card" style="margin-top:14px" hidden aria-live="polite"></div>
+  <div class="acoes" style="margin-top:12px"><button type="button" id="h-mais" class="sec" style="margin:0" hidden>Carregar mais resultados</button></div>
+</main>
+<main id="evo" class="tela" hidden aria-labelledby="evo-titulo">
+  <div class="card">
+    <h2 id="evo-titulo" style="margin:0;font-size:17px">Evolução por senioridade</h2>
+    <p class="nota">Compara o que as vagas de um mesmo cargo pedem em cada nível (júnior, pleno e sênior). Os números descrevem os anúncios coletados, não trajetórias reais de carreira.</p>
+    <p class="status" id="e-status" role="status" aria-live="polite"></p>
+    <label for="e-cargo">Cargo, tecnologia ou área</label>
+    <input id="e-cargo" autocomplete="off" maxlength="200" placeholder="Ex.: Desenvolvedor React Native, Engenheiro de Dados…">
+    <label for="e-paginas">Quantidade de vagas a coletar por nível</label>
+    <select id="e-paginas" aria-label="Páginas por nível"><option value="1">1 página (~10 vagas por nível)</option><option value="2" selected>2 páginas (~20 vagas por nível)</option><option value="3">3 páginas (~30 vagas por nível)</option></select>
+    <p class="nota" id="e-estimativa"></p>
+    <div class="acoes">
+      <button type="button" id="e-analisar">Analisar</button>
+      <button type="button" id="e-voltar" class="sec" style="margin:0">← Voltar às vagas</button>
+    </div>
+  </div>
+  <p class="nota" id="e-inicial" style="margin-top:14px">Nenhuma análise realizada ainda. Informe um cargo e clique em Analisar.</p>
+  <div id="e-resultado" class="card" style="margin-top:14px" hidden aria-live="polite"></div>
+</main>
 <div id="chat" role="log" aria-live="polite"></div>
 <form id="form"><div class="bar">
   <input id="q" aria-label="Cargo ou área" placeholder="Cargo ou área (ex.: desenvolvedor Kotlin jr)" autocomplete="off" autofocus>
@@ -218,6 +337,510 @@ form.onsubmit = e => {
   q.value = '';
   buscar(texto);
 };
+// ---------- Perfil ----------
+const P = {
+  nome: document.getElementById('p-nome'), area: document.getElementById('p-area'),
+  add: document.getElementById('p-add'), chips: document.getElementById('p-chips'),
+  vazio: document.getElementById('p-vazio'), contador: document.getElementById('p-contador'),
+  quando: document.getElementById('p-quando'), status: document.getElementById('p-status'),
+  corpo: document.getElementById('p-corpo'), salvar: document.getElementById('p-salvar'),
+  recarregar: document.getElementById('p-recarregar'), voltar: document.getElementById('p-voltar'),
+  perfil: document.getElementById('perfil'),
+};
+const navVagas = document.getElementById('nav-vagas'), navPerfil = document.getElementById('nav-perfil');
+let pAreas = [], pLimites = {nome: 100, area: 60, max_areas: 30};
+let pSujo = false, pSalvando = false, pCarregando = false, pCarregado = false, pSeq = 0;
+
+const norm = t => t.normalize('NFC').replace(/\s+/g, ' ').trim();
+const chave = t => norm(t).toLowerCase();
+
+function pMsg(texto, tipo) {
+  P.status.textContent = texto || '';
+  P.status.className = 'status' + (tipo ? ' ' + tipo : '');
+}
+function pDesenhar() {
+  P.chips.replaceChildren();
+  pAreas.forEach((a, i) => {
+    const chip = el('span', 'chip'), x = el('button', null, '×');
+    chip.appendChild(el('span', null, a));            // textContent: nunca interpreta HTML
+    x.type = 'button';
+    x.setAttribute('aria-label', 'Remover ' + a);
+    x.onclick = () => { pAreas.splice(i, 1); pSujo = true; pMsg(''); pDesenhar(); };
+    chip.appendChild(x);
+    P.chips.appendChild(chip);
+  });
+  P.vazio.hidden = pAreas.length > 0;
+  P.contador.textContent = `${pAreas.length}/${pLimites.max_areas} áreas`;
+}
+function pAplicar(d) {
+  P.nome.value = d.nome;
+  pAreas = d.areas.slice();
+  pLimites = d.limites || pLimites;
+  P.quando.textContent = d.atualizado_em ? 'Última atualização: ' + new Date(d.atualizado_em).toLocaleString('pt-BR') : '';
+  pSujo = false;
+  pDesenhar();
+}
+async function pErroDe(r) {
+  let j = null;
+  try { j = await r.json(); } catch {}
+  return j && typeof j.detail === 'string' ? j.detail : 'Erro ' + r.status + ' no servidor.';
+}
+async function pCarregar() {
+  const meu = ++pSeq;
+  pCarregando = true; pCarregado = false;
+  P.corpo.hidden = true; P.recarregar.hidden = true; P.salvar.disabled = true;
+  pMsg('Carregando perfil…');
+  try {
+    const r = await fetch('/perfil');
+    if (!r.ok) throw new Error(await pErroDe(r));
+    const d = await r.json();
+    if (meu !== pSeq) return;
+    pAplicar(d);
+    P.corpo.hidden = false; P.salvar.disabled = false; pCarregado = true;
+    pMsg(d.existe ? '' : 'Você ainda não tem um perfil salvo. Preencha o que quiser e clique em Salvar.');
+  } catch (err) {
+    if (meu !== pSeq) return;
+    pMsg('Não foi possível carregar o perfil: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
+    P.recarregar.hidden = false;
+  } finally {
+    if (meu === pSeq) pCarregando = false;
+  }
+}
+function pAdicionar() {
+  const a = norm(P.area.value);
+  if (!a) return pMsg('Digite o nome de uma área antes de adicionar.', 'erro');
+  if (a.length > pLimites.area) return pMsg(`Cada área pode ter no máximo ${pLimites.area} caracteres (atual: ${a.length}).`, 'erro');
+  if (pAreas.some(x => chave(x) === chave(a))) return pMsg(`A área “${a}” já está na lista.`, 'erro');
+  if (pAreas.length >= pLimites.max_areas) return pMsg(`Você pode cadastrar no máximo ${pLimites.max_areas} áreas.`, 'erro');
+  pAreas.push(a); pSujo = true;
+  P.area.value = ''; pMsg(''); pDesenhar(); P.area.focus();
+}
+async function pSalvar() {
+  if (pSalvando || !pCarregado) return;                 // cliques repetidos não geram gravações extras
+  const nome = norm(P.nome.value);
+  if (nome.length > pLimites.nome) return pMsg(`O nome pode ter no máximo ${pLimites.nome} caracteres (atual: ${nome.length}).`, 'erro');
+  if (P.area.value.trim()) return pMsg('Há texto no campo de área que ainda não foi adicionado. Clique em Adicionar ou apague-o.', 'erro');
+  pSalvando = true; P.salvar.disabled = true; pMsg('Salvando…');
+  try {
+    const r = await fetch('/perfil', {
+      method: 'PUT', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({nome, areas: pAreas}),
+    });
+    if (!r.ok) throw new Error(await pErroDe(r));
+    pAplicar(await r.json());                            // só confirma depois da resposta do servidor
+    pMsg('Perfil salvo.', 'ok');
+  } catch (err) {
+    // mantém exatamente o que está no formulário para permitir nova tentativa
+    pMsg('Não foi possível salvar: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
+  } finally {
+    pSalvando = false; P.salvar.disabled = !pCarregado;
+  }
+}
+// ---------- Navegação entre telas ----------
+const navHab = document.getElementById('nav-hab'), navEvo = document.getElementById('nav-evo');
+let telaAtual = 'vagas';
+function alteracoesPendentes() {
+  if (telaAtual === 'perfil') return pSujo || P.area.value.trim();
+  if (telaAtual === 'hab') return H.sujo || H.input.value.trim();
+  return false;
+}
+function ir(tela) {
+  if (tela === telaAtual) return;
+  if (alteracoesPendentes() && !confirm('Há alterações não salvas. Descartar?')) return;
+  mostrar(tela);
+}
+function mostrar(tela) {
+  if (telaAtual === 'hab' && tela !== 'hab') { H.sujo = false; H.input.value = ''; }  // descartado: recarrega do servidor ao voltar
+  telaAtual = tela;
+  P.perfil.hidden = tela !== 'perfil';
+  H.tela.hidden = tela !== 'hab';
+  E.tela.hidden = tela !== 'evo';
+  chat.hidden = form.hidden = hint.hidden = tela !== 'vagas';
+  [[navVagas, 'vagas'], [navHab, 'hab'], [navEvo, 'evo'], [navPerfil, 'perfil']].forEach(([b, t]) => {
+    if (t === tela) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  if (tela === 'perfil') { pCarregar(); P.nome.focus(); } else pSeq++;
+  if (tela === 'hab') { hCarregar(); H.input.focus(); } else H.seq++;
+  if (tela === 'evo') { E.cargo.focus(); ePlano(); }
+  if (tela === 'vagas') q.focus();
+}
+navPerfil.onclick = () => ir('perfil');
+navHab.onclick = () => ir('hab');
+navEvo.onclick = () => ir('evo');
+navVagas.onclick = () => ir('vagas');
+P.voltar.onclick = () => ir('vagas');
+P.recarregar.onclick = pCarregar;
+P.add.onclick = pAdicionar;
+P.salvar.onclick = pSalvar;
+P.area.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); pAdicionar(); } });
+P.nome.addEventListener('input', () => { pSujo = true; });
+
+// ---------- Vagas por habilidades ----------
+const $h = id => document.getElementById(id);
+const H = {
+  tela: $h('hab'), input: $h('h-input'), add: $h('h-add'), chips: $h('h-chips'), vazio: $h('h-vazio'),
+  contador: $h('h-contador'), status: $h('h-status'), area: $h('h-area'), paginas: $h('h-paginas'),
+  estimativa: $h('h-estimativa'), buscar: $h('h-buscar'), salvar: $h('h-salvar'), recarregar: $h('h-recarregar'),
+  voltar: $h('h-voltar'), resultado: $h('h-resultado'), mais: $h('h-mais'),
+  itens: [], limites: {habilidade: 40, max_habilidades: 60}, sujo: false, carregado: false, ocupado: false,
+  adicionando: false, buscando: false, seq: 0, planoSeq: 0, ultima: null, retornadas: null, paginasCarregadas: 0,
+};
+const hMsg = (t, tipo) => { H.status.textContent = t || ''; H.status.className = 'status' + (tipo ? ' ' + tipo : ''); };
+const hNomes = () => H.itens.map(i => i.nome);
+const linkSeguro = u => typeof u === 'string' && /^https?:\/\//i.test(u);
+
+function hDesenharChips() {
+  H.chips.replaceChildren();
+  H.itens.forEach((it, i) => {
+    const chip = el('span', 'chip');
+    chip.appendChild(el('span', null, it.nome));            // sempre como texto
+    const ed = el('button', 'editar', '✎'); ed.type = 'button';
+    ed.setAttribute('aria-label', 'Corrigir ' + it.nome);
+    ed.onclick = () => { H.itens.splice(i, 1); H.sujo = true; H.input.value = it.nome; hDesenharChips(); hPlano(); H.input.focus(); };
+    const x = el('button', null, '×'); x.type = 'button';
+    x.setAttribute('aria-label', 'Remover ' + it.nome);
+    x.onclick = () => { H.itens.splice(i, 1); H.sujo = true; hMsg(''); hDesenharChips(); hPlano(); };
+    chip.append(ed, x);
+    H.chips.appendChild(chip);
+  });
+  H.vazio.hidden = H.itens.length > 0;
+  H.contador.textContent = `${H.itens.length}/${H.limites.max_habilidades} habilidades`;
+}
+async function hCarregar() {
+  const meu = ++H.seq;
+  H.carregado = false; H.salvar.disabled = true; H.recarregar.hidden = true;
+  hMsg('Carregando seu perfil…');
+  const [rh, rp] = await Promise.allSettled([fetch('/habilidades'), fetch('/perfil')]);
+  if (meu !== H.seq) return;
+  // áreas: só contexto opcional; falhar aqui não impede a busca
+  const manter = H.area.value;
+  H.area.replaceChildren(new Option('Sem área: só as habilidades', ''));
+  try {
+    if (rp.status === 'fulfilled' && rp.value.ok) {
+      (await rp.value.json()).areas.forEach(a => H.area.appendChild(new Option(a, a)));
+      if ([...H.area.options].some(o => o.value === manter)) H.area.value = manter;
+    }
+  } catch {}
+  try {
+    if (rh.status !== 'fulfilled') throw new TypeError('rede');
+    if (!rh.value.ok) throw new Error(await pErroDe(rh.value));
+    const d = await rh.value.json();
+    if (meu !== H.seq) return;
+    if (!H.sujo) { H.itens = d.habilidades.map(n => ({nome: n})); }
+    H.limites = d.limites || H.limites;
+    H.carregado = true; H.salvar.disabled = false;
+    hMsg(d.habilidades.length ? '' : 'Seu perfil ainda não tem habilidades. Adicione algumas abaixo; você pode buscar mesmo sem salvar.');
+  } catch (err) {
+    if (meu !== H.seq) return;
+    // Não libera "Salvar": gravar agora poderia sobrescrever habilidades guardadas que não conseguimos ler.
+    hMsg('Não foi possível recuperar suas habilidades salvas: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message) +
+         ' Você ainda pode digitar habilidades e buscar.', 'erro');
+    H.recarregar.hidden = false;
+  }
+  hDesenharChips(); hPlano();
+}
+async function hAdicionar() {
+  if (H.adicionando) return;
+  const texto = H.input.value;
+  if (!texto.trim()) return hMsg('Digite o nome de uma habilidade antes de adicionar.', 'erro');
+  H.adicionando = true;
+  try {
+    const r = await fetch('/habilidades/normalizar', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({termo: texto})});
+    if (!r.ok) throw new Error(await pErroDe(r));
+    const h = await r.json();                              // a regra de aliases fica só no backend
+    const igual = H.itens.find(i => i.chave === h.chave);
+    if (igual) return hMsg(`“${h.nome}” já está na lista.`, 'erro');
+    if (H.itens.length >= H.limites.max_habilidades) return hMsg(`Você pode cadastrar no máximo ${H.limites.max_habilidades} habilidades.`, 'erro');
+    H.itens.push({nome: h.nome, chave: h.chave}); H.sujo = true;
+    H.input.value = ''; hMsg(''); hDesenharChips(); hPlano(); H.input.focus();
+  } catch (err) {
+    hMsg(err.name === 'TypeError' ? 'Falha de conexão ao validar a habilidade. Tente de novo.' : err.message, 'erro');
+  } finally { H.adicionando = false; }
+}
+async function hSalvar() {
+  if (H.ocupado || !H.carregado) return;
+  if (H.input.value.trim()) return hMsg('Há texto no campo de habilidade que ainda não foi adicionado. Clique em Adicionar ou apague-o.', 'erro');
+  H.ocupado = true; H.salvar.disabled = true; hMsg('Salvando…');
+  try {
+    const r = await fetch('/habilidades', {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({habilidades: hNomes()})});
+    if (!r.ok) throw new Error(await pErroDe(r));
+    H.itens = (await r.json()).habilidades.map(n => ({nome: n}));
+    H.sujo = false; hDesenharChips(); hPlano();
+    hMsg('Habilidades salvas.', 'ok');
+  } catch (err) {
+    hMsg('Não foi possível salvar: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
+  } finally { H.ocupado = false; H.salvar.disabled = !H.carregado; }
+}
+async function hPlano() {
+  const meu = ++H.planoSeq;
+  if (!H.itens.length) { H.estimativa.textContent = 'Adicione ao menos uma habilidade para ver o consumo previsto.'; return; }
+  try {
+    const r = await fetch('/busca-habilidades/plano', {method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({habilidades: hNomes(), area: H.area.value || null, paginas: +H.paginas.value})});
+    if (!r.ok) throw new Error(await pErroDe(r));
+    const p = await r.json();
+    if (meu !== H.planoSeq) return;
+    let t = `Esta busca usa ${p.consultas.length} consulta(s) × ${p.paginas} página(s): até ${p.requisicoes_max} requisição(ões) da sua cota (páginas já em cache não gastam). Cota usada: ${p.usado}/${p.limite}.`;
+    t += ' Consultas: ' + p.consultas.map(c => '“' + c.texto + '”').join(' e ') + '.';
+    if (p.habilidades_fora_da_busca.length) t += ` ${p.habilidades_fora_da_busca.length} habilidade(s) ficam fora do texto da consulta, mas contam na compatibilidade.`;
+    if (!p.credenciais) t += ' Atenção: faltam as credenciais do provedor de vagas no .env; a busca real está indisponível.';
+    H.estimativa.textContent = t;
+  } catch (err) {
+    if (meu === H.planoSeq) H.estimativa.textContent = '';
+  }
+}
+function hChips(lista, cls) {
+  const box = el('div', 'chips');
+  lista.forEach(n => box.appendChild(el('span', 'chip ' + cls, n)));
+  return box;
+}
+function hCartao(v) {
+  const c = el('div', 'vaga');
+  const h = el('h3');
+  if (linkSeguro(v.link)) {
+    const a = el('a', null, v.titulo || '(sem título)');
+    a.href = v.link; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    h.appendChild(a);
+  } else h.textContent = (v.titulo || '(sem título)') + ' (sem link de candidatura)';
+  c.appendChild(h);
+  c.appendChild(el('p', 'sub', [v.empresa, v.local].filter(Boolean).join(' · ') || 'Empresa não informada'));
+  if (v.estado === 'avaliada') {
+    c.appendChild(el('span', 'badge', `≈ ${Math.round(v.compatibilidade)}% dos requisitos identificados constam no seu perfil`));
+    c.appendChild(el('p', 'sub', `${v.obrigatorios_correspondidos}/${v.obrigatorios_total} obrigatórios · ${v.diferenciais_correspondidos}/${v.diferenciais_total} diferenciais · ${v.requisitos_total} requisitos identificados`
+      + (v.confianca === 'baixa' ? ' · pouca base para a nota' : '')));
+  } else {
+    c.appendChild(el('span', 'badge nd', v.estado === 'dados_insuficientes' ? 'Dados insuficientes: sem pontuação' : 'Não analisada: sem pontuação'));
+  }
+  if (v.correspondencias.length) { c.appendChild(el('p', 'rotulo', 'Está no seu perfil')); c.appendChild(hChips(v.correspondencias, 'ok')); }
+  if (v.faltando_obrigatorios.length) { c.appendChild(el('p', 'rotulo', 'Obrigatórios ainda não cadastrados no perfil')); c.appendChild(hChips(v.faltando_obrigatorios, 'falta')); }
+  if (v.faltando_diferenciais.length) { c.appendChild(el('p', 'rotulo', 'Diferenciais ainda não cadastrados no perfil')); c.appendChild(hChips(v.faltando_diferenciais, 'falta')); }
+  const extra = [v.nivel && 'nível citado: ' + v.nivel, v.anos_experiencia_min != null && 'experiência mínima citada: ' + v.anos_experiencia_min + ' ano(s)'].filter(Boolean);
+  if (extra.length) c.appendChild(el('p', 'sub', extra.join(' · ')));
+  v.avisos.forEach(a => c.appendChild(el('p', 'aviso', a)));
+  return c;
+}
+function hRenderizar(d) {
+  const box = H.resultado; box.replaceChildren(); box.hidden = false;
+  const k = d.contagens;
+  box.appendChild(el('h3', null, 'Resultado'));
+  box.appendChild(el('p', 'nota', `${k.retornadas} vaga(s) retornada(s) pelo provedor · ${k.unicas} única(s) · ${k.avaliadas} avaliada(s) · ${k.dados_insuficientes} com dados insuficientes`
+    + (k.sem_analise ? ` · ${k.sem_analise} sem análise` : '') + (k.analise_incompleta ? ` · ${k.analise_incompleta} com análise incompleta` : '') + '.'));
+  box.appendChild(el('p', 'nota', `Esta busca usou ${d.requisicoes_feitas} requisição(ões); ${d.do_cache} página(s) vieram do cache. Cota usada: ${d.usado}/${d.limite}. Consultas: ` + d.consultas.map(c => '“' + c.texto + '”').join(' e ') + '.'));
+  d.avisos.forEach(a => box.appendChild(el('p', 'aviso', a)));
+  if (d.estado === 'sem_vagas') {
+    box.appendChild(el('p', null, 'Nenhuma vaga encontrada para essas habilidades. Tente menos habilidades, outra combinação ou mais páginas.'));
+    return;
+  }
+  box.appendChild(el('h4', null, 'Habilidades a desenvolver'));
+  const L = d.lacunas;
+  box.appendChild(el('p', 'nota', 'Requisitos que aparecem nas vagas avaliadas e ainda não constam no seu perfil. Isso não prova que você não saiba usá-los: pode só não estar cadastrado. '
+    + `Base: ${L.base} vaga(s) avaliada(s).`));
+  if (!L.itens.length) box.appendChild(el('p', 'vazio', L.base ? 'Todos os requisitos identificados já constam no seu perfil.' : 'Sem vagas avaliadas para calcular prioridades.'));
+  L.itens.forEach(i => {
+    const row = el('div', 'lac');
+    row.appendChild(el('strong', null, i.nome));
+    row.appendChild(el('span', 'sub', `não cadastrada no perfil · em ${i.vagas} de ${L.base} vagas (${i.percentual}%) · obrigatória em ${i.como_obrigatoria} · diferencial em ${i.como_diferencial}`));
+    box.appendChild(row);
+  });
+  if (L.total > L.itens.length) box.appendChild(el('p', 'nota', `Mostrando as ${L.itens.length} mais relevantes de ${L.total}.`));
+  const grupos = [['avaliada', 'Vagas avaliadas (maior compatibilidade primeiro)'], ['dados_insuficientes', 'Vagas com dados insuficientes'], ['sem_analise', 'Vagas sem análise']];
+  grupos.forEach(([estado, titulo]) => {
+    const vs = d.vagas.filter(v => v.estado === estado);
+    if (!vs.length) return;
+    box.appendChild(el('h4', null, `${titulo} (${vs.length})`));
+    const lista = el('div', 'lista');
+    vs.forEach(v => lista.appendChild(hCartao(v)));
+    box.appendChild(lista);
+  });
+}
+async function hBuscar(maisPaginas) {
+  if (H.buscando) return;
+  if (!H.itens.length) return hMsg('Adicione ao menos uma habilidade (por exemplo: Python, React, SQL) para buscar vagas.', 'erro');
+  if (!maisPaginas && H.input.value.trim()) return hMsg('Há texto no campo de habilidade que ainda não foi adicionado. Clique em Adicionar ou apague-o.', 'erro');
+  const base = maisPaginas ? H.ultima : {habilidades: hNomes(), area: H.area.value || null};
+  const paginas = maisPaginas ? H.paginasCarregadas + 1 : +H.paginas.value;
+  H.buscando = true; H.buscar.disabled = true; H.mais.disabled = true;
+  hMsg(maisPaginas ? 'Carregando mais resultados…' : 'Buscando e analisando vagas… isso pode levar alguns segundos.');
+  try {
+    const r = await fetch('/busca-habilidades', {method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({...base, pais: 'br', paginas})});
+    if (!r.ok) throw new Error(await pErroDe(r));
+    const d = await r.json();
+    const semNovas = maisPaginas && H.retornadas !== null && d.contagens.retornadas <= H.retornadas;
+    H.ultima = base; H.paginasCarregadas = d.paginas; H.retornadas = d.contagens.retornadas;
+    hRenderizar(d);
+    H.mais.hidden = !d.pode_carregar_mais || semNovas || d.estado === 'sem_vagas';
+    hMsg(semNovas ? 'Não há mais resultados para essa busca.' : (d.estado === 'sem_vagas' ? 'Busca concluída: nenhuma vaga encontrada.' : 'Busca concluída.'), semNovas ? '' : 'ok');
+    if (!d.pode_carregar_mais && d.estado === 'ok' && !semNovas) hMsg(`Busca concluída. Limite de ${d.max_paginas} páginas por consulta atingido.`, 'ok');
+  } catch (err) {
+    hMsg('Não foi possível concluir a busca: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
+  } finally { H.buscando = false; H.buscar.disabled = false; H.mais.disabled = false; }
+}
+H.add.onclick = hAdicionar;
+H.salvar.onclick = hSalvar;
+H.buscar.onclick = () => hBuscar(false);
+H.mais.onclick = () => hBuscar(true);
+H.recarregar.onclick = hCarregar;
+H.voltar.onclick = () => ir('vagas');
+H.input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); hAdicionar(); } });
+H.area.onchange = hPlano;
+H.paginas.onchange = hPlano;
+// ---------- Evolução por senioridade ----------
+const E = {
+  tela: $h('evo'), cargo: $h('e-cargo'), paginas: $h('e-paginas'), estimativa: $h('e-estimativa'), status: $h('e-status'),
+  analisar: $h('e-analisar'), voltar: $h('e-voltar'), inicial: $h('e-inicial'), resultado: $h('e-resultado'),
+  ocupado: false, planoSeq: 0, timer: null,
+};
+const eMsg = (t, tipo) => { E.status.textContent = t || ''; E.status.className = 'status' + (tipo ? ' ' + tipo : ''); };
+const NV = ['junior', 'pleno', 'senior'];
+const ROT = {junior: 'Júnior', pleno: 'Pleno', senior: 'Sênior'};
+const COB = {adequada: 'adequada', baixa: 'baixa (indicativa)', insuficiente: 'muito baixa', sem_dados: 'sem vagas'};
+const fp = x => (x === null || x === undefined) ? 'sem dados' : (Math.round(x * 10) / 10) + '%';
+const fpp = x => (x === null || x === undefined) ? '—' : (x > 0 ? '+' : '') + (Math.round(x * 10) / 10) + ' p.p.';
+
+async function ePlano() {
+  const meu = ++E.planoSeq;
+  const cargo = E.cargo.value.trim();
+  if (cargo.length < 2) { E.estimativa.textContent = 'Informe um cargo para ver o consumo previsto de requisições.'; return; }
+  try {
+    const r = await fetch('/evolucao/plano', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({cargo, paginas: +E.paginas.value})});
+    if (!r.ok) throw new Error(await pErroDe(r));
+    const p = await r.json();
+    if (meu !== E.planoSeq) return;
+    let t = `Serão 3 consultas (júnior, pleno e sênior) × ${p.paginas} página(s): até ${p.requisicoes_max} requisição(ões) da sua cota; páginas em cache (válidas por ${p.cache_ttl_horas} h) não gastam. Cota usada: ${p.usado}/${p.limite}.`;
+    if (!p.credenciais) t += ' Atenção: faltam as credenciais do provedor de vagas no .env; a busca real está indisponível.';
+    E.estimativa.textContent = t;
+  } catch (err) { if (meu === E.planoSeq) E.estimativa.textContent = err.name === 'TypeError' ? '' : err.message; }
+}
+function celula(c) {
+  const td = el('td');
+  if (Array.isArray(c)) { td.appendChild(document.createTextNode(c[0])); td.appendChild(el('small', null, c[1])); } else td.textContent = c;
+  return td;
+}
+function tabela(cabecalho, linhas) {
+  const wrap = el('div', 'tabwrap'), t = el('table', 'tab');
+  const tr = el('tr'); cabecalho.forEach(h => tr.appendChild(el('th', null, h)));
+  t.appendChild(el('thead')).appendChild(tr);
+  const tb = el('tbody'); linhas.forEach(l => { const r = el('tr'); l.forEach(c => r.appendChild(celula(c))); tb.appendChild(r); });
+  t.appendChild(tb); wrap.appendChild(t); return wrap;
+}
+function celNivel(h, n, d) {
+  const x = h.niveis[n], den = d.niveis[n].analisadas;
+  if (!den) return 'sem vagas';
+  return [`${fp(x.pct)} (${x.vagas}/${den})`, `obrig. ${x.obrigatoria} · dif. ${x.diferencial}` + (x.nao_classificada ? ` · não classif. ${x.nao_classificada}` : '')];
+}
+function eRenderizar(d) {
+  const box = E.resultado; box.replaceChildren(); box.hidden = false; E.inicial.hidden = true;
+  const k = d.contagens;
+  box.appendChild(el('h3', null, `Resultado para “${d.cargo}”`));
+  box.appendChild(el('p', 'nota', d.todo_do_cache
+    ? `Dados armazenados em cache (nenhuma requisição nova; válidos por até ${d.cache_ttl_horas} h). Cota usada: ${d.usado}/${d.limite}.`
+    : `Dados coletados agora: ${d.requisicoes_feitas} requisição(ões) usada(s), ${d.do_cache} página(s) vieram do cache. Cota usada: ${d.usado}/${d.limite}.`));
+  box.appendChild(el('p', 'nota', 'Consultas: ' + d.consultas.map(c => '“' + c.texto + '”').join(', ') + '. O nível de cada vaga vem das evidências do anúncio, não da consulta que a trouxe.'));
+  box.appendChild(tabela(['Nível', 'Coletadas', 'Analisadas', 'Cobertura', 'Análise incompleta'],
+    NV.map(n => [ROT[n], String(d.niveis[n].coletadas), String(d.niveis[n].analisadas), COB[d.niveis[n].cobertura], String(d.niveis[n].analise_incompleta)])));
+  box.appendChild(el('p', 'nota', `${k.retornadas} vaga(s) retornada(s) pelo provedor · ${k.unicas} única(s) · ${k.no_contexto} no contexto · ${k.classificadas} classificada(s) · ${k.analisadas} analisada(s) nos três níveis. `
+    + `Fora dos três níveis: ${k.outros.estagio} estágio/trainee, ${k.outros.lideranca} liderança/gestão, ${k.outros.especialista} especialista/arquitetura. `
+    + `Não classificadas: ${k.nao_classificadas.total} (${k.nao_classificadas.conflitante} com informações conflitantes, ${k.nao_classificadas.informacao_insuficiente} com informação insuficiente).`
+    + (k.fora_do_contexto ? ` ${k.fora_do_contexto} fora do contexto da pesquisa.` : '')));
+  d.avisos.forEach(a => box.appendChild(el('p', 'aviso', a)));
+  if (d.estado === 'sem_vagas') { box.appendChild(el('p', null, 'Nenhuma vaga encontrada para esse cargo. Tente outro termo ou mais páginas.')); return; }
+  if (d.estado === 'sem_classificadas') {
+    box.appendChild(el('p', null, 'Nenhuma vaga pôde ser classificada como júnior, pleno ou sênior; os dados são incompatíveis com a comparação por nível. Tente um cargo mais específico ou mais páginas.'));
+    eDetalhes(box, d); return;
+  }
+  box.appendChild(el('h4', null, 'Comparação entre níveis'));
+  box.appendChild(el('p', 'nota', d.comparacao_confiavel
+    ? `Os três níveis têm ${d.limiares.min_analisadas}+ vagas analisadas. Diferenças são em pontos percentuais (p.p.) entre as frequências de cada nível.`
+    : `Atenção: algum nível tem menos de ${d.limiares.min_analisadas} vagas analisadas. Os números são descritivos e as tendências, apenas indicativas. Diferenças são em pontos percentuais (p.p.).`));
+  d.categorias.forEach(c => {
+    const h = el('h4', null, c.titulo);
+    if (c.disponivel && c.firmeza === 'indicativa') h.appendChild(el('span', 'badge ind', 'indicativo: amostra pequena'));
+    box.appendChild(h);
+    box.appendChild(el('p', 'nota', c.descricao));
+    if (!c.disponivel) { box.appendChild(el('p', 'vazio', 'Não calculado: ' + c.motivo + '.')); return; }
+    if (!c.itens.length) { box.appendChild(el('p', 'vazio', 'Nenhuma habilidade atende ao critério nesta amostra.')); return; }
+    const ul = el('ul');
+    c.itens.forEach(i => ul.appendChild(el('li', null, `${i.nome}: júnior ${fp(i.pct.junior)} → pleno ${fp(i.pct.pleno)} → sênior ${fp(i.pct.senior)}`
+      + (i.diferenca_pp !== null ? ` (${fpp(i.diferenca_pp)})` : '') + (i.vagas_destino ? ` · no nível de destino: obrigatória em ${i.obrigatoria_destino}, diferencial em ${i.diferencial_destino} vaga(s)` : ''))));
+    box.appendChild(ul);
+  });
+  box.appendChild(el('h4', null, 'Habilidades por nível'));
+  box.appendChild(el('p', 'nota', 'Percentual das vagas analisadas do nível que citam a habilidade (vagas que citam / vagas analisadas). Cada habilidade conta uma vez por vaga. “Obrig.” e “dif.” separam obrigatórios e diferenciais; “não classif.” são menções sem marcação explícita no anúncio.'));
+  box.appendChild(tabela(['Habilidade', 'Júnior', 'Pleno', 'Sênior', 'Júnior → Pleno', 'Pleno → Sênior'],
+    d.habilidades.slice(0, 25).map(h => [h.nome, celNivel(h, 'junior', d), celNivel(h, 'pleno', d), celNivel(h, 'senior', d), fpp(h.diferenca_pp.junior_pleno), fpp(h.diferenca_pp.pleno_senior)])));
+  if (d.habilidades.length > 25) box.appendChild(el('p', 'nota', `Mostrando 25 de ${d.habilidades.length} habilidades.`));
+  box.appendChild(el('h4', null, 'Ranking por nível'));
+  NV.forEach(n => {
+    box.appendChild(el('p', 'rotulo', `${ROT[n]} (${d.niveis[n].analisadas} vaga(s) analisada(s))`));
+    if (!d.rankings[n].length) { box.appendChild(el('p', 'vazio', 'Sem dados para este nível.')); return; }
+    const ol = el('ol');
+    d.rankings[n].forEach(i => ol.appendChild(el('li', null, `${i.nome} — ${fp(i.pct)} (${i.vagas}/${d.niveis[n].analisadas}) · obrigatória em ${i.obrigatoria} · diferencial em ${i.diferencial}` + (i.nao_classificada ? ` · não classificada em ${i.nao_classificada}` : ''))));
+    box.appendChild(ol);
+  });
+  box.appendChild(el('h4', null, 'Experiência exigida'));
+  box.appendChild(el('p', 'nota', 'Só vagas cujo nível veio do título ou de frase explícita (evita circularidade). Mediana só com 5+ valores.'));
+  box.appendChild(tabela(['Nível', 'Vagas consideradas', 'Informam anos', 'Mediana', 'Faixa'],
+    NV.map(n => { const x = d.experiencia[n]; return [ROT[n], String(x.base), String(x.com_informacao),
+      x.mediana !== null ? x.mediana + ' ano(s)' : (x.valores ? 'poucos dados (' + x.valores.join(', ') + ' ano(s))' : 'não identificada'),
+      x.minimo !== null ? `${x.minimo}–${x.maximo} ano(s)` : '—']; })));
+  box.appendChild(el('h4', null, 'Responsabilidades citadas'));
+  const rb = d.responsabilidades.base;
+  box.appendChild(el('p', 'nota', `Percentual das vagas consideradas que citam a responsabilidade (base: júnior ${rb.junior}, pleno ${rb.pleno}, sênior ${rb.senior}). Descritivo: não vira nota de senioridade, e “não identificada” não prova ausência.`));
+  box.appendChild(tabela(['Responsabilidade', 'Júnior', 'Pleno', 'Sênior'],
+    d.responsabilidades.itens.map(i => [i.rotulo, ...NV.map(n => rb[n] ? `${fp(i.niveis[n].pct)} (${i.niveis[n].vagas}/${rb[n]})` : 'sem vagas')])));
+  box.appendChild(el('h4', null, 'Para o próximo nível: requisitos não cadastrados no perfil'));
+  if (!d.perfil.disponivel) {
+    box.appendChild(el('p', 'nota', 'Seu perfil ainda não tem habilidades cadastradas. A análise acima não depende dele; cadastre habilidades em “Vagas por habilidades” para ver quais requisitos do próximo nível não constam no seu perfil.'));
+  } else {
+    box.appendChild(el('p', 'nota', `Usando as ${d.perfil_habilidades} habilidade(s) do seu perfil. Lista requisitos presentes em ${d.limiares.presenca_min_pct}%+ das vagas do nível de destino. “Não cadastrada” não significa que você não saiba usar; e frequência nos anúncios não garante promoção ou contratação.`));
+    d.perfil.transicoes.forEach(t => {
+      box.appendChild(el('p', 'rotulo', `${ROT[t.de]} → ${ROT[t.para]} (${t.analisadas_destino} vaga(s) ${ROT[t.para].toLowerCase()} analisada(s); cobertura ${COB[t.cobertura_destino]}; ${t.ja_no_perfil} requisito(s) comuns já constam no seu perfil)`));
+      if (!t.itens.length) { box.appendChild(el('p', 'vazio', t.analisadas_destino ? 'Nenhum requisito frequente do nível de destino está ausente do seu perfil.' : 'Sem vagas no nível de destino para comparar.')); return; }
+      t.itens.forEach(i => { const row = el('div', 'lac'); row.appendChild(el('strong', null, i.nome)); row.appendChild(el('span', 'sub', i.explicacao)); box.appendChild(row); });
+    });
+  }
+  box.appendChild(el('h4', null, 'Como ler estes dados'));
+  const ul = el('ul');
+  ul.appendChild(el('li', null, 'Observado diretamente: quais habilidades, anos e responsabilidades aparecem nos anúncios coletados e em quantos deles.'));
+  ul.appendChild(el('li', null, 'Inferido da frequência: diferenças em p.p. entre níveis e as categorias acima. São tendências desta amostra, não regras de carreira nem causas de promoção.'));
+  ul.appendChild(el('li', null, 'Incerto: o que depende de poucas vagas, de vagas sem nível claro ou de requisitos não classificados. Veja a cobertura e os avisos.'));
+  box.appendChild(ul);
+  eDetalhes(box, d);
+}
+function eDetalhes(box, d) {
+  const det = el('details');
+  det.appendChild(el('summary', null, `Como cada vaga foi classificada (${d.vagas.length})`));
+  const ul = el('ul');
+  d.vagas.slice(0, 80).forEach(v => ul.appendChild(el('li', null, `${v.titulo || '(sem título)'}${v.empresa ? ' · ' + v.empresa : ''} — ${v.rotulo}` + (v.origem ? ` (${v.origem === 'explicita' ? 'explícito' : 'inferido'})` : '')
+    + (v.fora_do_contexto ? ' · fora do contexto' : '') + ` — ${v.motivo}`)));
+  det.appendChild(ul);
+  if (d.vagas.length > 80) det.appendChild(el('p', 'nota', `Mostrando 80 de ${d.vagas.length}.`));
+  box.appendChild(det);
+}
+async function eAnalisar() {
+  if (E.ocupado) return;
+  const cargo = E.cargo.value.trim();
+  if (cargo.length < 2) return eMsg('Informe um cargo, tecnologia ou área (por exemplo: Desenvolvedor React Native).', 'erro');
+  E.ocupado = true; E.analisar.disabled = true;
+  E.resultado.hidden = true;                                  // resultado anterior não fica na tela como se fosse o novo
+  eMsg('Coletando e analisando vagas dos três níveis… isso pode levar alguns segundos.');
+  try {
+    const r = await fetch('/evolucao', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({cargo, paginas: +E.paginas.value})});
+    if (!r.ok) throw new Error(await pErroDe(r));
+    const d = await r.json();
+    eRenderizar(d);
+    const parcial = Object.values(d.status_consultas).some(s => s !== 'ok');
+    eMsg(d.estado === 'sem_vagas' ? 'Análise concluída: nenhuma vaga encontrada.' : (parcial ? 'Análise concluída com resultados parciais.' : 'Análise concluída.'), parcial ? '' : 'ok');
+  } catch (err) {
+    eMsg('Não foi possível concluir a análise: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
+  } finally { E.ocupado = false; E.analisar.disabled = false; }
+}
+E.analisar.onclick = eAnalisar;
+E.voltar.onclick = () => ir('vagas');
+E.cargo.addEventListener('input', () => { clearTimeout(E.timer); E.timer = setTimeout(ePlano, 250); });
+E.cargo.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); eAnalisar(); } });
+E.paginas.onchange = ePlano;
 </script>
 </body>
 </html>

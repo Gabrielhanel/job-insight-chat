@@ -16,7 +16,8 @@ TECNOLOGIAS = {
     "Objective-C": ["objective-c", "objective c"],
     "C#": ["c#", "c sharp"],
     "C++": ["c++", "cpp"],
-    ".NET": [".net", "dotnet", "asp.net", ".net core"],
+    ".NET": [".net", "dotnet", ".net core"],
+    "ASP.NET": ["asp.net", "asp.net core"],  # tecnologia distinta de .NET (Etapa 2)
     "PHP": ["php"],
     "Ruby": ["ruby"],
     "Go": ["golang", "go lang"],

@@ -65,6 +65,8 @@ async def _adzuna(cargo: str, pais: str, paginas: int, inicio: int) -> tuple[lis
                         "empresa": (v.get("company") or {}).get("display_name"),
                         "descricao": v.get("description"),
                         "link": v.get("redirect_url"),
+                        "local": (v.get("location") or {}).get("display_name"),
+                        "id_externo": str(v["id"]) if v.get("id") is not None else None,
                     }
                 )
     return brutas, {"paginas_ok": paginas, "paginas_total": paginas, "do_cache": 0}
@@ -109,6 +111,8 @@ async def _jsearch(cargo: str, pais: str, paginas: int, inicio: int) -> tuple[li
             "empresa": v.get("employer_name"),
             "descricao": v.get("job_description"),
             "link": v.get("job_apply_link"),
+            "local": ", ".join(x for x in (v.get("job_city"), v.get("job_state"), v.get("job_country")) if x),
+            "id_externo": v.get("job_id"),
         }
         for dados, _ in ok
         for v in dados
@@ -117,24 +121,47 @@ async def _jsearch(cargo: str, pais: str, paginas: int, inicio: int) -> tuple[li
     return brutas, info
 
 
-def _limpar(brutas: list[dict]) -> list[dict]:
+def _limpar(brutas: list[dict], por_anuncio: bool = False) -> list[dict]:
+    """Padrão (busca por cargo): descarta duplicadas (título+empresa) e descrições curtas demais.
+
+    por_anuncio=True (busca por habilidades): identifica o anúncio pelo id do provedor, ou por
+    título+empresa+local; mantém descrições curtas (a avaliação as marcará como dados insuficientes).
+    """
     vistos, vagas = set(), []
     for v in brutas:
         titulo, empresa = v["titulo"] or "", v["empresa"] or ""
         desc = v["descricao"] or ""
-        chave = (titulo.lower(), empresa.lower())
-        # descarta duplicadas e descrições curtas demais para extrair algo útil
-        if chave in vistos or len(desc) < 150:
-            continue
-        vistos.add(chave)
+        local = v.get("local") or ""
+        id_ext = v.get("id_externo")
+        if por_anuncio:
+            chave = ("id", str(id_ext)) if id_ext else ("t", titulo.lower(), empresa.lower(), local.lower())
+            if chave in vistos or not (titulo or desc):
+                continue
+            vistos.add(chave)
+            ident = f"id:{id_ext}" if id_ext else "|".join(chave[1:])
+        else:
+            chave = (titulo.lower(), empresa.lower())
+            # descarta duplicadas e descrições curtas demais para extrair algo útil
+            if chave in vistos or len(desc) < 150:
+                continue
+            vistos.add(chave)
+            ident = "|".join(chave)
         vagas.append(
-            {"id": "|".join(chave), "titulo": titulo, "empresa": empresa, "descricao": desc[:6000], "link": v["link"]}
+            {"id": ident, "titulo": titulo, "empresa": empresa, "descricao": desc[:6000], "link": v["link"], "local": local}
         )
     return vagas
 
 
+def provedor_status() -> tuple[str, bool]:
+    """(provedor ativo, credenciais presentes?) — sem expor valores."""
+    provedor = os.getenv("PROVEDOR", "adzuna")
+    if provedor == "jsearch":
+        return provedor, bool(os.getenv("OPENWEBNINJA_API_KEY") or os.getenv("RAPIDAPI_KEY"))
+    return provedor, bool(os.getenv("ADZUNA_APP_ID") and os.getenv("ADZUNA_APP_KEY"))
+
+
 async def buscar_vagas(
-    cargo: str, pais: str = "br", paginas: int | None = None, inicio: int = 1
+    cargo: str, pais: str = "br", paginas: int | None = None, inicio: int = 1, por_anuncio: bool = False
 ) -> tuple[list[dict], dict]:
     """PROVEDOR=adzuna (padrão) ou jsearch. Cobre as páginas [inicio, inicio + paginas)."""
     try:
@@ -147,4 +174,4 @@ async def buscar_vagas(
     except (httpx.HTTPError, ErroVagas) as e:
         raise _converter(e)
     info |= {"ultima_pagina": inicio + paginas - 1, "total_bruto": len(brutas)}
-    return _limpar(brutas), info
+    return _limpar(brutas, por_anuncio), info

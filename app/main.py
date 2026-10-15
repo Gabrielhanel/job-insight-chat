@@ -11,7 +11,7 @@ from fastapi import FastAPI, HTTPException, Query  # noqa: E402
 from fastapi.responses import FileResponse  # noqa: E402
 from pydantic import BaseModel, Field  # noqa: E402
 
-from app import cache  # noqa: E402
+from app import cache, evolucao, perfil, reversa  # noqa: E402
 from app.aggregate import agregar  # noqa: E402
 from app.busca import coletar  # noqa: E402
 from app.extract import extrair_todas  # noqa: E402
@@ -39,6 +39,33 @@ class Pergunta(BaseModel):
     # Cada página = 1 requisição na cota. Vazio = padrão do provedor.
     paginas: int | None = Field(None, ge=1, le=5)
     apenas_novas: bool = False  # True: só vagas ainda não exibidas para esta consulta
+
+
+class PerfilEntrada(BaseModel):
+    nome: str = ""  # vazio é válido: o perfil não é obrigatório para usar a aplicação
+    areas: list[str] = []
+
+
+class HabilidadesEntrada(BaseModel):
+    habilidades: list[str] = []
+
+
+class TermoEntrada(BaseModel):
+    termo: str = ""
+
+
+class BuscaHabilidades(BaseModel):
+    habilidades: list[str] | None = None  # None = usar as habilidades salvas no perfil
+    area: str | None = None  # contexto opcional (uma área do perfil), entra no texto da consulta
+    pais: str = Field("br", pattern=r"^[a-z]{2}$")
+    paginas: int = Field(1, ge=1, le=reversa.MAX_PAGINAS)  # por consulta; cada página = 1 requisição se não estiver em cache
+
+
+class EvolucaoEntrada(BaseModel):
+    cargo: str = ""
+    pais: str = Field("br", pattern=r"^[a-z]{2}$")
+    paginas: int = Field(2, ge=1, le=evolucao.MAX_PAGINAS)  # por nível; cada página = 1 requisição se não estiver em cache
+    habilidades: list[str] | None = None  # None = habilidades salvas no perfil (opcional: sem perfil a análise funciona igual)
 
 
 MSG_SEM_NOVAS = "Não localizamos novas vagas semelhantes à descrição solicitada."
@@ -125,3 +152,87 @@ async def chat(p: Pergunta):
 @app.get("/analisar")
 async def analisar_get(cargo: str, pais: str = "br", paginas: int | None = Query(None, ge=1, le=5)):
     return await analisar(cargo, pais, paginas)
+
+
+@app.get("/perfil")
+async def perfil_obter():
+    try:
+        return perfil.obter()
+    except perfil.ErroPerfil as e:
+        raise HTTPException(e.status, e.msg)
+
+
+@app.put("/perfil")
+async def perfil_salvar(p: PerfilEntrada):
+    # Substitui o perfil inteiro (nome + lista de áreas): adicionar/remover áreas = enviar a lista nova.
+    try:
+        return perfil.salvar(p.nome, p.areas)
+    except perfil.ErroPerfil as e:
+        raise HTTPException(e.status, e.msg)
+
+
+@app.get("/habilidades")
+async def habilidades_obter():
+    try:
+        return perfil.obter_habilidades()
+    except perfil.ErroPerfil as e:
+        raise HTTPException(e.status, e.msg)
+
+
+@app.put("/habilidades")
+async def habilidades_salvar(p: HabilidadesEntrada):
+    # Substitui só a lista de habilidades; nome e áreas do perfil não são tocados.
+    try:
+        return perfil.salvar_habilidades(p.habilidades)
+    except perfil.ErroPerfil as e:
+        raise HTTPException(e.status, e.msg)
+
+
+@app.post("/habilidades/normalizar")
+async def habilidades_normalizar(p: TermoEntrada):
+    # Regra única de canonicalização para a interface (evita duplicar aliases em JavaScript).
+    try:
+        return perfil.normalizar_habilidade(p.termo)
+    except perfil.ErroPerfil as e:
+        raise HTTPException(e.status, e.msg)
+
+
+def _habilidades_da_busca(p: BuscaHabilidades) -> list[str]:
+    if p.habilidades is None:
+        return perfil.obter_habilidades()["habilidades"]
+    return [n for _, n in perfil.validar_habilidades(p.habilidades)]
+
+
+@app.post("/busca-habilidades/plano")
+async def busca_habilidades_plano(p: BuscaHabilidades):
+    """Mostra as consultas e o consumo máximo de requisições, sem chamar o provedor."""
+    try:
+        return reversa.planejar(_habilidades_da_busca(p), p.area, p.paginas)
+    except (reversa.ErroReversa, perfil.ErroPerfil) as e:
+        raise HTTPException(e.status, e.msg)
+
+
+@app.post("/busca-habilidades")
+async def busca_habilidades(p: BuscaHabilidades):
+    try:
+        return await reversa.buscar(_habilidades_da_busca(p), p.area, p.pais, p.paginas)
+    except (reversa.ErroReversa, perfil.ErroPerfil) as e:
+        raise HTTPException(e.status, e.msg)
+
+
+@app.post("/evolucao/plano")
+async def evolucao_plano(p: EvolucaoEntrada):
+    """Consultas por nível e consumo máximo de requisições, sem chamar o provedor."""
+    try:
+        return evolucao.planejar(p.cargo, p.pais, p.paginas)
+    except evolucao.ErroEvolucao as e:
+        raise HTTPException(e.status, e.msg)
+
+
+@app.post("/evolucao")
+async def evolucao_analisar(p: EvolucaoEntrada):
+    try:
+        habilidades = None if p.habilidades is None else [n for _, n in perfil.validar_habilidades(p.habilidades)]
+        return await evolucao.analisar(p.cargo, p.pais, p.paginas, habilidades)
+    except (evolucao.ErroEvolucao, perfil.ErroPerfil) as e:
+        raise HTTPException(e.status, e.msg)
