@@ -8,7 +8,7 @@ FILLER = (
 
 
 def vaga(job_id, titulo="Pessoa Desenvolvedora", empresa="Empresa A", obrigatorios=(), diferenciais=(),
-         cidade="São Paulo", link="https://exemplo.test/vaga", descricao=None):
+         cidade="São Paulo", link="https://exemplo.test/vaga", descricao=None, publicada=None):
     """Vaga no formato JSearch. Descrição com 'Requisitos' e (opcional) seção 'Diferenciais'."""
     if descricao is None:
         descricao = f"Requisitos: {', '.join(obrigatorios)}.{FILLER}"
@@ -18,6 +18,8 @@ def vaga(job_id, titulo="Pessoa Desenvolvedora", empresa="Empresa A", obrigatori
          "job_apply_link": link, "job_city": cidade, "job_state": "SP", "job_country": "BR"}
     if job_id is not None:
         d["job_id"] = job_id
+    if publicada:
+        d["job_posted_at_datetime_utc"] = publicada
     return d
 
 

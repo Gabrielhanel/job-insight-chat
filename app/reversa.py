@@ -111,6 +111,7 @@ async def buscar(habilidades: list[str], area: str | None, pais: str, paginas: i
                 f"Resultado parcial na consulta “{consulta['texto']}”: {info['paginas_ok']} de {info['paginas_total']} páginas."
             )
         for v in vagas:
+            v["_consulta"] = consulta["texto"]  # consulta que trouxe a vaga (referência para comparar vagas)
             unicas.setdefault(v["id"], v)  # a mesma vaga vinda de duas consultas conta uma vez
 
     if consultas_ok == 0:
@@ -150,8 +151,9 @@ async def buscar(habilidades: list[str], area: str | None, pais: str, paginas: i
             av["avisos"].append(item["motivo"])
         saida.append(
             {
-                "id": v["id"], "titulo": v["titulo"], "empresa": v["empresa"], "local": v["local"] or None,
-                "link": _link_seguro(v["link"]), "metodo": item["metodo"], "analise_incompleta": item["incompleta"], **av,
+                "id": v["id"], "provedor": v.get("provedor"), "titulo": v["titulo"], "empresa": v["empresa"], "local": v["local"] or None,
+                "link": _link_seguro(v["link"]), "metodo": item["metodo"], "analise_incompleta": item["incompleta"],
+                "ref": {"consulta": v["_consulta"], "pais": pais, "paginas": paginas}, **av,
             }
         )
     saida = compat.ordenar(saida)

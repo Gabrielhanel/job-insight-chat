@@ -102,6 +102,19 @@ def categorizar_requisitos(extracao: dict, descricao: str, metodo: str | None) -
     return obrig, dif, {}
 
 
+def distribuicao_classificacao(contagens: dict, niveis: dict) -> list[dict]:
+    """Como as vagas únicas coletadas se dividem (partes exclusivas que somam `unicas`), para o gráfico de rosca.
+    Só vagas dentro do contexto entram nos níveis; as demais ficam em "Fora do contexto"."""
+    total = contagens["unicas"]
+    if not total:
+        return []
+    partes = [(n, ROTULOS[n], niveis[n]["coletadas"]) for n in PRINCIPAIS]
+    partes += [(o, ROTULOS[o], contagens["outros"][o]) for o in OUTROS]
+    partes += [("nao_classificada", "Não classificadas", contagens["nao_classificadas"]["total"]),
+               ("fora_do_contexto", "Fora do contexto da pesquisa", contagens["fora_do_contexto"])]
+    return [{"chave": c, "rotulo": r, "vagas": v, "percentual": round(100 * v / total, 1)} for c, r, v in partes if v > 0]
+
+
 # ---------------------------------------------------------------- análise
 def _msg_credenciais(provedor: str) -> str:
     quais = "OPENWEBNINJA_API_KEY (ou RAPIDAPI_KEY)" if provedor == "jsearch" else "ADZUNA_APP_ID e ADZUNA_APP_KEY"
@@ -241,6 +254,7 @@ async def analisar(cargo: str, pais: str, paginas: int, habilidades: list[str] |
         "estado": estado, "cargo": cargo, "consultas": plano["consultas"], "status_consultas": status_consulta, "paginas": paginas,
         "contexto": {"tecnologias": ctx_termos, "verificavel": contexto_verificavel},
         "contagens": contagens, "comparacao_confiavel": all(comp["niveis"][n]["cobertura"] == "adequada" for n in PRINCIPAIS),
+        "distribuicao": distribuicao_classificacao(contagens, comp["niveis"]),
         **comp, "perfil_habilidades": len(habilidades), "avisos": avisos, "vagas": vagas_out,
         "do_cache": do_cache, "todo_do_cache": todo_cache, "cache_ttl_horas": plano["cache_ttl_horas"], "requisicoes_feitas": requisicoes,
         "usado": cache.usado(), "limite": cache.QUOTA,

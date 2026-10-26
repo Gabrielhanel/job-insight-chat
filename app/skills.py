@@ -86,3 +86,38 @@ _POSICAO = {chave(nome): i for i, nome in enumerate(TECNOLOGIAS)}
 
 def posicao_no_dicionario(termo: str) -> int | None:
     return _POSICAO.get(chave(termo))
+
+
+def variantes(nome: str) -> list[str]:
+    """Grafias conhecidas de uma habilidade (para localizar o trecho do anúncio que a evidencia), mais longas primeiro."""
+    k = chave(nome)
+    achadas = {nome.lower()}
+    achadas |= {v for v, n in {**_ALIASES_BASE, **EXTRA_ALIASES}.items() if chave(n) == k}
+    return sorted(achadas, key=lambda v: (-len(v), v))
+
+
+# Relações técnicas CURADAS e conservadoras (não derivam de semelhança de texto). Servem só para uma observação
+# complementar na comparação de vagas: nunca contam como habilidade comum.
+RELACOES = [
+    ("JavaScript", "TypeScript", "TypeScript é um superconjunto tipado de JavaScript, mas exige conhecimento próprio"),
+    ("JavaScript", "Node.js", "Node.js executa JavaScript no servidor, com ecossistema próprio"),
+    ("JavaScript", "React", "React é uma biblioteca escrita em JavaScript"),
+    ("React", "React Native", "React Native usa React para apps móveis, com conhecimento de plataforma adicional"),
+    ("SQL", "PostgreSQL", "PostgreSQL é um banco de dados que usa SQL"),
+    ("SQL", "MySQL", "MySQL é um banco de dados que usa SQL"),
+    (".NET", "ASP.NET", "ASP.NET é um framework web sobre a plataforma .NET"),
+    ("Java", "Kotlin", "ambas rodam na JVM, mas são linguagens diferentes"),
+    ("Java", "Spring", "Spring é um framework do ecossistema Java"),
+    ("Python", "Django", "Django é um framework web em Python"),
+    ("Python", "FastAPI", "FastAPI é um framework web em Python"),
+    ("Python", "Flask", "Flask é um framework web em Python"),
+]
+_REL: dict[str, list[tuple[str, str, str]]] = {}
+for _a, _b, _m in RELACOES:
+    _REL.setdefault(chave(_a), []).append((chave(_b), canonizar(_b), _m))
+    _REL.setdefault(chave(_b), []).append((chave(_a), canonizar(_a), _m))
+
+
+def relacionadas(termo: str) -> list[tuple[str, str, str]]:
+    """[(chave, nome canônico, motivo)] das habilidades relacionadas, mas distintas, de `termo`."""
+    return _REL.get(chave(termo), [])

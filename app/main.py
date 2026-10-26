@@ -11,7 +11,7 @@ from fastapi import FastAPI, HTTPException, Query  # noqa: E402
 from fastapi.responses import FileResponse  # noqa: E402
 from pydantic import BaseModel, Field  # noqa: E402
 
-from app import cache, evolucao, perfil, reversa  # noqa: E402
+from app import cache, comparador, evolucao, insights, perfil, reversa, sessoes  # noqa: E402
 from app.aggregate import agregar  # noqa: E402
 from app.busca import coletar  # noqa: E402
 from app.extract import extrair_todas  # noqa: E402
@@ -39,6 +39,8 @@ class Pergunta(BaseModel):
     # Cada página = 1 requisição na cota. Vazio = padrão do provedor.
     paginas: int | None = Field(None, ge=1, le=5)
     apenas_novas: bool = False  # True: só vagas ainda não exibidas para esta consulta
+    sessao_id: str | None = None  # opcional: grava a análise nesta sessão do histórico
+    interacao_uid: str | None = None  # id do evento do navegador (evita duplicar cliques repetidos)
 
 
 class PerfilEntrada(BaseModel):
@@ -59,6 +61,8 @@ class BuscaHabilidades(BaseModel):
     area: str | None = None  # contexto opcional (uma área do perfil), entra no texto da consulta
     pais: str = Field("br", pattern=r"^[a-z]{2}$")
     paginas: int = Field(1, ge=1, le=reversa.MAX_PAGINAS)  # por consulta; cada página = 1 requisição se não estiver em cache
+    sessao_id: str | None = None  # opcional: grava a análise nesta sessão do histórico
+    interacao_uid: str | None = None  # id do evento do navegador (evita duplicar cliques repetidos)
 
 
 class EvolucaoEntrada(BaseModel):
@@ -66,6 +70,35 @@ class EvolucaoEntrada(BaseModel):
     pais: str = Field("br", pattern=r"^[a-z]{2}$")
     paginas: int = Field(2, ge=1, le=evolucao.MAX_PAGINAS)  # por nível; cada página = 1 requisição se não estiver em cache
     habilidades: list[str] | None = None  # None = habilidades salvas no perfil (opcional: sem perfil a análise funciona igual)
+    sessao_id: str | None = None  # opcional: grava a análise nesta sessão do histórico
+    interacao_uid: str | None = None  # id do evento do navegador (evita duplicar cliques repetidos)
+
+
+class SelecaoVaga(BaseModel):
+    """Uma das duas vagas: tipo "busca" (consulta + país + páginas + id do anúncio) ou "manual" (título + descrição...)."""
+    tipo: str = ""
+    consulta: str | None = None
+    pais: str | None = "br"
+    paginas: int | None = 1
+    id: str | None = None
+    titulo: str | None = None
+    empresa: str | None = None
+    link: str | None = None
+    descricao: str | None = None
+
+
+class ComparacaoEntrada(BaseModel):
+    a: SelecaoVaga
+    b: SelecaoVaga
+    habilidades: list[str] | None = None  # None = habilidades salvas no perfil (opcional)
+    sessao_id: str | None = None  # opcional: grava a análise nesta sessão do histórico
+    interacao_uid: str | None = None  # id do evento do navegador (evita duplicar cliques repetidos)
+
+
+class BuscaComparacao(BaseModel):
+    consulta: str = ""
+    pais: str = "br"
+    paginas: int = 1
 
 
 MSG_SEM_NOVAS = "Não localizamos novas vagas semelhantes à descrição solicitada."
@@ -143,10 +176,42 @@ async def status():
     }
 
 
+def _http(e: "sessoes.ErroSessao") -> HTTPException:
+    return HTTPException(e.status, e.msg)
+
+
+async def _com_sessao(tipo: str, sessao_id: str | None, uid: str | None, parametros: dict, calcular):
+    """Sem `sessao_id` a rota se comporta como sempre. Com ele: valida a sessão, devolve o registro já salvo se o MESMO evento
+    (uid) se repetiu (sem recalcular e sem gastar cota) e, senão, calcula e grava o resultado que o próprio servidor produziu.
+    Falha ao gravar não derruba a análise: ela volta com salvo=False e um aviso."""
+    if not sessao_id:
+        r = await calcular()
+        return {**r, "insights": insights.gerar(tipo, r)}
+    try:
+        sessoes.garantir(sessao_id)
+        ja = sessoes.interacao_por_uid(sessao_id, uid)
+    except sessoes.ErroSessao as e:
+        raise _http(e)
+    if ja and ja["resultado"] is not None:
+        meta = {k: ja[k] for k in ("id", "seq", "tipo", "consulta", "status", "resumo", "criada_em")}
+        return {**ja["resultado"], "insights": insights.gerar(tipo, ja["resultado"]),
+                "interacao": {**meta, "sessao_id": sessao_id, "repetida": True, "resultado_guardado": True}, "salvo": True}
+    resultado = await calcular()
+    ins = insights.gerar(tipo, resultado)  # calculado na resposta; nunca entra no resultado gravado
+    try:
+        meta = sessoes.registrar(sessao_id, tipo, parametros, resultado, uid)
+        return {**resultado, "insights": ins, "interacao": meta, "salvo": True}
+    except sessoes.ErroSessao as e:
+        return {**resultado, "insights": ins, "interacao": None, "salvo": False, "aviso_historico": e.msg}
+
+
 @app.post("/chat")
 async def chat(p: Pergunta):
-    r = await analisar(p.mensagem, p.pais, p.paginas, p.apenas_novas)
-    return {"resposta": r["aviso"] if r.get("sem_novas") else formatar(r), "dados": r}
+    async def calcular():
+        r = await analisar(p.mensagem, p.pais, p.paginas, p.apenas_novas)
+        return {"resposta": r["aviso"] if r.get("sem_novas") else formatar(r), "dados": r}
+    return await _com_sessao("chat", p.sessao_id, p.interacao_uid,
+                             {"mensagem": p.mensagem, "pais": p.pais, "paginas": p.paginas, "apenas_novas": p.apenas_novas}, calcular)
 
 
 @app.get("/analisar")
@@ -215,7 +280,9 @@ async def busca_habilidades_plano(p: BuscaHabilidades):
 @app.post("/busca-habilidades")
 async def busca_habilidades(p: BuscaHabilidades):
     try:
-        return await reversa.buscar(_habilidades_da_busca(p), p.area, p.pais, p.paginas)
+        habs = _habilidades_da_busca(p)
+        return await _com_sessao("habilidades", p.sessao_id, p.interacao_uid, {"habilidades": habs, "area": p.area, "pais": p.pais, "paginas": p.paginas},
+                                 lambda: reversa.buscar(habs, p.area, p.pais, p.paginas))
     except (reversa.ErroReversa, perfil.ErroPerfil) as e:
         raise HTTPException(e.status, e.msg)
 
@@ -233,6 +300,97 @@ async def evolucao_plano(p: EvolucaoEntrada):
 async def evolucao_analisar(p: EvolucaoEntrada):
     try:
         habilidades = None if p.habilidades is None else [n for _, n in perfil.validar_habilidades(p.habilidades)]
-        return await evolucao.analisar(p.cargo, p.pais, p.paginas, habilidades)
+        return await _com_sessao("evolucao", p.sessao_id, p.interacao_uid, {"cargo": p.cargo, "pais": p.pais, "paginas": p.paginas},
+                                 lambda: evolucao.analisar(p.cargo, p.pais, p.paginas, habilidades))
     except (evolucao.ErroEvolucao, perfil.ErroPerfil) as e:
         raise HTTPException(e.status, e.msg)
+
+
+@app.post("/comparar/plano")
+async def comparar_plano(p: BuscaComparacao):
+    """Consumo previsto da busca de um dos lados (sem chamar o provedor)."""
+    try:
+        return comparador.planejar(p.consulta, p.pais, p.paginas)
+    except comparador.ErroComparacao as e:
+        raise HTTPException(e.status, e.msg)
+
+
+@app.post("/comparar/buscar")
+async def comparar_buscar(p: BuscaComparacao):
+    """Lista vagas de uma consulta para escolher a vaga A ou B (usa cache e cota existentes)."""
+    try:
+        return await comparador.buscar(p.consulta, p.pais, p.paginas)
+    except comparador.ErroComparacao as e:
+        raise HTTPException(e.status, e.msg)
+
+
+@app.post("/comparar")
+async def comparar_vagas(p: ComparacaoEntrada):
+    try:
+        habilidades = None if p.habilidades is None else [n for _, n in perfil.validar_habilidades(p.habilidades)]
+        a, b = p.a.model_dump(), p.b.model_dump()
+        return await _com_sessao("comparar", p.sessao_id, p.interacao_uid, {"a": a, "b": b}, lambda: comparador.comparar_vagas(a, b, habilidades))
+    except (comparador.ErroComparacao, perfil.ErroPerfil) as e:
+        raise HTTPException(e.status, e.msg)
+
+
+# ---------------------------------------------------------------- sessões (histórico persistente)
+class SessaoNova(BaseModel):
+    titulo: str | None = None
+
+
+class SessaoRenomear(BaseModel):
+    titulo: str = ""
+
+
+class ImportarLegado(BaseModel):
+    itens: list = []  # itens inválidos são descartados na validação (não derrubam a importação dos válidos)
+
+
+@app.post("/sessoes", status_code=201)
+async def sessoes_criar(p: SessaoNova):
+    try:
+        return sessoes.criar(p.titulo)
+    except sessoes.ErroSessao as e:
+        raise _http(e)
+
+
+@app.get("/sessoes")
+async def sessoes_listar(limite: int = Query(sessoes.MAX_LISTA, ge=1, le=sessoes.MAX_LISTA)):
+    try:
+        return {"sessoes": sessoes.listar(limite)}
+    except sessoes.ErroSessao as e:
+        raise _http(e)
+
+
+@app.post("/sessoes/importar-legado", status_code=201)
+async def sessoes_importar_legado(p: ImportarLegado):
+    """Converte, uma vez, o histórico antigo do navegador (busca por cargo) em uma sessão."""
+    try:
+        return sessoes.importar_legado(p.itens)
+    except sessoes.ErroSessao as e:
+        raise _http(e)
+
+
+@app.get("/sessoes/{sessao_id}")
+async def sessoes_obter(sessao_id: str):
+    try:
+        return sessoes.obter(sessao_id)
+    except sessoes.ErroSessao as e:
+        raise _http(e)
+
+
+@app.patch("/sessoes/{sessao_id}")
+async def sessoes_renomear(sessao_id: str, p: SessaoRenomear):
+    try:
+        return sessoes.renomear(sessao_id, p.titulo)
+    except sessoes.ErroSessao as e:
+        raise _http(e)
+
+
+@app.delete("/sessoes/{sessao_id}")
+async def sessoes_excluir(sessao_id: str):
+    try:
+        return sessoes.excluir(sessao_id)
+    except sessoes.ErroSessao as e:
+        raise _http(e)

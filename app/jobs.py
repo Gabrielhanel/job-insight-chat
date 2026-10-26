@@ -66,6 +66,7 @@ async def _adzuna(cargo: str, pais: str, paginas: int, inicio: int) -> tuple[lis
                         "descricao": v.get("description"),
                         "link": v.get("redirect_url"),
                         "local": (v.get("location") or {}).get("display_name"),
+                        "publicada_em": v.get("created"),
                         "id_externo": str(v["id"]) if v.get("id") is not None else None,
                     }
                 )
@@ -113,6 +114,7 @@ async def _jsearch(cargo: str, pais: str, paginas: int, inicio: int) -> tuple[li
             "link": v.get("job_apply_link"),
             "local": ", ".join(x for x in (v.get("job_city"), v.get("job_state"), v.get("job_country")) if x),
             "id_externo": v.get("job_id"),
+            "publicada_em": v.get("job_posted_at_datetime_utc"),
         }
         for dados, _ in ok
         for v in dados
@@ -147,7 +149,8 @@ def _limpar(brutas: list[dict], por_anuncio: bool = False) -> list[dict]:
             vistos.add(chave)
             ident = "|".join(chave)
         vagas.append(
-            {"id": ident, "titulo": titulo, "empresa": empresa, "descricao": desc[:6000], "link": v["link"], "local": local}
+            {"id": ident, "titulo": titulo, "empresa": empresa, "descricao": desc[:6000], "link": v["link"], "local": local,
+             "publicada_em": v.get("publicada_em"), "descricao_truncada": len(desc) > 6000}
         )
     return vagas
 
@@ -174,4 +177,9 @@ async def buscar_vagas(
     except (httpx.HTTPError, ErroVagas) as e:
         raise _converter(e)
     info |= {"ultima_pagina": inicio + paginas - 1, "total_bruto": len(brutas)}
-    return _limpar(brutas, por_anuncio), info
+    vagas = _limpar(brutas, por_anuncio)
+    provedor = os.getenv("PROVEDOR", "adzuna")
+    for v in vagas:  # identidade da origem (campos aditivos; a busca por cargo ignora)
+        v["provedor"] = provedor
+        v["descricao_resumo"] = provedor == "adzuna"  # a busca do Adzuna costuma devolver só um trecho da descrição
+    return vagas, info

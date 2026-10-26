@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-tema="claro">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Requisitos de vagas</title>
+<title>JobInsight — requisitos de vagas</title>
+<script>(function(){var t='claro';try{if(localStorage.getItem('jobinsight-tema')==='escuro')t='escuro';}catch(e){}document.documentElement.setAttribute('data-tema',t);})();</script>
 <style>
-:root{--on:#fff;--warn:#b45309;--bg:#f6f7f9;--card:#fff;--txt:#1d2230;--mut:#677084;--bd:#e2e5ec;--acc:#2563eb;--bar:#dbe6fd}
-@media(prefers-color-scheme:dark){:root{--on:#0b1220;--warn:#fbbf24;--bg:#14161c;--card:#1d2029;--txt:#e8eaf0;--mut:#9aa3b5;--bd:#2c303c;--acc:#6b9bff;--bar:#27304a}}
+:root,:root[data-tema=claro]{color-scheme:light;--on:#fff;--bg:#F7F6F2;--card:#fff;--txt:#171717;--mut:#55575c;--bd:#cfccc1;--forte:#171717;--sombra:#171717;--acc:#3458F5;--bar:#e6e3d8;--warn:#8a5a00;--ok-txt:#16705e;--err:#c0262d;--amarelo:#F2AD36;--verde:#249F88;--foco:#171717}
+:root[data-tema=escuro]{color-scheme:dark;--on:#0b0d12;--bg:#151719;--card:#202226;--txt:#f0f0ec;--mut:#a9adb5;--bd:#363940;--forte:#d8dae0;--sombra:#05060a;--acc:#7894FF;--bar:#2e3138;--warn:#f5c15c;--ok-txt:#5fd1b8;--err:#ff7b80;--amarelo:#F5BE5F;--verde:#3fc0a6;--foco:#f0f0ec}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{display:flex;flex-direction:column;background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-header{flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--bd);background:var(--card);font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:12px}
+body{background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 nav{display:flex;gap:6px;flex-wrap:wrap}
 nav button{background:transparent;color:var(--acc);border:1px solid var(--bd);font-weight:400;padding:4px 12px;border-radius:999px;font-size:13px}
 nav button[aria-current="page"]{background:var(--acc);color:var(--on);border-color:var(--acc);font-weight:600}
@@ -19,14 +19,9 @@ nav button[aria-current="page"]{background:var(--acc);color:var(--on);border-col
 .msg{max-width:100%;padding:12px 16px;border-radius:14px;overflow-wrap:anywhere}
 .user{align-self:flex-end;background:var(--acc);color:var(--on);max-width:80%}
 .bot{align-self:flex-start;background:var(--card);border:1px solid var(--bd);width:100%}
-.err{border-color:#d33;color:#d33}
+.err{border-color:var(--err);color:var(--err)}
 .bot h4{margin:16px 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
 .lead{margin:0;font-weight:600}
-.row{display:grid;grid-template-columns:130px 1fr 78px;align-items:center;gap:10px;margin:5px 0;font-size:14px}
-.row .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.track{height:10px;background:var(--bar);border-radius:5px;overflow:hidden}
-.fill{height:100%;background:var(--acc);border-radius:5px}
-.pct{text-align:right;color:var(--mut);font-size:13px;white-space:nowrap}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{padding:3px 10px;border:1px solid var(--bd);border-radius:999px;font-size:13px}
 .meta{margin:12px 0 0;color:var(--mut);font-size:13px}
@@ -41,7 +36,6 @@ input{flex:1;min-width:0}
 button{background:var(--acc);color:var(--on);border:0;cursor:pointer;font-weight:600}
 button:disabled{opacity:.5;cursor:wait}
 .hint{max-width:780px;margin:0 auto;padding:0 20px 8px;color:var(--mut);font-size:12px;width:100%}
-@media(max-width:560px){.row{grid-template-columns:90px 1fr 70px}}
 .ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.ex button{background:transparent;color:var(--acc);border:1px solid var(--bd);font-weight:400;padding:4px 10px;border-radius:999px;font-size:13px}
 .aviso{margin:10px 0 0;font-size:13px;color:var(--warn)}
 .sec{background:transparent;color:var(--acc);border:1px solid var(--bd);margin-top:12px;padding:6px 12px;font-size:13px;font-weight:400}
@@ -54,17 +48,16 @@ button:disabled{opacity:.5;cursor:wait}
 .tela .chip button:hover{color:var(--txt)}
 .tela .vazio,.tela .contador{color:var(--mut);font-size:13px;margin:0}
 .tela .status{margin:0;font-size:13px;min-height:1.5em}
-.tela .status.ok{color:#15803d}
-.tela .status.erro{color:#d33}
+.tela .status.ok{color:var(--ok-txt)}
+.tela .status.erro{color:var(--err)}
 .tela .acoes{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-@media(prefers-color-scheme:dark){.tela .status.ok{color:#4ade80}}
 .tela h3{margin:0;font-size:15px}
 .tela h4{margin:14px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
 .vaga{border:1px solid var(--bd);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;overflow-wrap:anywhere;background:var(--bg)}
 .vaga .sub,.rotulo,.tela .nota{color:var(--mut);font-size:13px;margin:0}
 .badge{display:inline-block;align-self:flex-start;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:600;background:var(--bar)}
 .badge.nd{background:transparent;border:1px dashed var(--mut);color:var(--mut);font-weight:400}
-.tela .chip.ok{border-color:#15803d}
+.tela .chip.ok{border-color:var(--ok-txt)}
 .tela .chip.falta{border-style:dashed}
 .lac{display:flex;flex-direction:column;gap:2px;padding:6px 0;border-top:1px solid var(--bd);overflow-wrap:anywhere}
 .lac:first-of-type{border-top:0}
@@ -81,19 +74,163 @@ table.tab{border-collapse:collapse;width:100%;font-size:13px}
 .tela details{margin-top:10px}
 .tela summary{cursor:pointer;color:var(--acc)}
 .badge.ind{background:transparent;border:1px dashed var(--mut);color:var(--mut);font-weight:400;font-size:12px;padding:0 8px;margin-left:6px}
+.duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start}
+.lado{border:1px solid var(--bd);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.lado textarea{width:100%;min-height:110px;resize:vertical;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--txt)}
+.lado .res{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto}
+.lado .opcao{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;overflow-wrap:anywhere}
+.tag{display:inline-block;align-self:flex-start;padding:1px 8px;border-radius:6px;font-size:12px;font-weight:700;background:var(--acc);color:var(--on)}
+.tela pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:13px;margin:6px 0 0}
+.tela .evid{font-size:12px;color:var(--mut);margin:0 0 6px;overflow-wrap:anywhere}
+/* ---- gráficos (CSS/SVG nativos, sem biblioteca) ---- */
+:root,:root[data-tema=claro]{--c-a:#3458F5;--c-b:#F2AD36;--c-comum:#249F88;--c-jr:#249F88;--c-pl:#3458F5;--c-sr:#D6457A;--c-forte:#3458F5;--c-suave:#9fb0f7;--d1:#3458F5;--d2:#F2AD36;--d3:#249F88;--d4:#7c5cff;--d5:#D6457A;--d6:#0891b2;--d7:#65a30d;--d8:#6b7280}
+:root[data-tema=escuro]{--c-a:#7894FF;--c-b:#F5BE5F;--c-comum:#3fc0a6;--c-jr:#3fc0a6;--c-pl:#7894FF;--c-sr:#F27AA6;--c-forte:#7894FF;--c-suave:#46508a;--d1:#7894FF;--d2:#F5BE5F;--d3:#3fc0a6;--d4:#a78bfa;--d5:#F27AA6;--d6:#22d3ee;--d7:#a3e635;--d8:#9ca3af}
+.gr{margin:6px 0 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.gr-titulo{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+.gr-sub{margin:0;font-size:12px;color:var(--mut);overflow-wrap:anywhere}
+.gr-lista{display:flex;flex-direction:column;gap:6px;min-width:0}
+.gr-row{display:grid;grid-template-columns:minmax(96px,34%) minmax(60px,1fr) auto;align-items:center;gap:4px 10px;font-size:14px;min-width:0}
+.gr-nome{overflow-wrap:anywhere;min-width:0}
+.gr-trilho{display:flex;height:12px;background:var(--bar);border-radius:6px;overflow:hidden;min-width:0}
+.gr-barra{display:flex;height:100%;background:var(--c-a);border-radius:6px;overflow:hidden}
+.gr-seg{height:100%}.c-a{background:var(--c-a)}.c-b{background:var(--c-b)}.c-comum{background:var(--c-comum)}.c-jr{background:var(--c-jr)}.c-pl{background:var(--c-pl)}.c-sr{background:var(--c-sr)}
+.c-obrig,.c-analisada{background:var(--c-forte)}.c-dif,.c-coletada{background:var(--c-suave)}
+.gr-valor{color:var(--mut);font-size:13px;text-align:right;overflow-wrap:anywhere;min-width:0}
+.gr-grupo{display:flex;flex-direction:column;gap:3px;padding:6px 0;border-top:1px solid var(--bd);min-width:0}
+.gr-grupo .gr-row{grid-template-columns:minmax(64px,22%) minmax(60px,1fr) auto;font-size:13px}
+.gr-grupo>.gr-nome{font-weight:600}
+.gr-legenda{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--mut);margin:0;padding:0;list-style:none}
+.gr-leg{display:inline-flex;align-items:center;gap:6px;overflow-wrap:anywhere}
+.gr-ponto{width:10px;height:10px;border-radius:2px;display:inline-block;flex:0 0 auto}
+.gr-rosca{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.gr-rosca svg{width:150px;height:150px;max-width:100%;flex:0 0 auto}
+.gr-fatia{fill:none;stroke-width:20}
+.gr-centro{fill:var(--txt);font-size:20px;font-weight:700;text-anchor:middle}
+.gr-centro-sub{fill:var(--mut);font-size:8px;text-anchor:middle}
+.gr-fatia.c-a,.gr-fatia.c-b,.gr-fatia.c-comum,.gr-fatia.c-jr,.gr-fatia.c-pl,.gr-fatia.c-sr,.gr-fatia.c-obrig,.gr-fatia.c-dif,.gr-fatia.c-analisada,.gr-fatia.c-coletada{background:none}
+.c-a.gr-fatia{stroke:var(--c-a)}.c-b.gr-fatia{stroke:var(--c-b)}.c-comum.gr-fatia{stroke:var(--c-comum)}.c-jr.gr-fatia{stroke:var(--c-jr)}.c-pl.gr-fatia{stroke:var(--c-pl)}.c-sr.gr-fatia{stroke:var(--c-sr)}
+.c-obrig.gr-fatia,.c-analisada.gr-fatia{stroke:var(--c-forte)}.c-dif.gr-fatia,.c-coletada.gr-fatia{stroke:var(--c-suave)}
+.d1{stroke:var(--d1);background:var(--d1)}.d2{stroke:var(--d2);background:var(--d2)}.d3{stroke:var(--d3);background:var(--d3)}.d4{stroke:var(--d4);background:var(--d4)}
+.d5{stroke:var(--d5);background:var(--d5)}.d6{stroke:var(--d6);background:var(--d6)}.d7{stroke:var(--d7);background:var(--d7)}.d8{stroke:var(--d8);background:var(--d8)}
+.gr-texto{font-size:13px}.gr-texto ul{margin:6px 0 0;padding-left:20px;overflow-wrap:anywhere}
+.gr .sec{align-self:flex-start;margin-top:4px}
+@media(max-width:560px){
+  .gr-row,.gr-grupo .gr-row{grid-template-columns:1fr auto}
+  .gr-row>.gr-nome{grid-column:1 / -1}
+  .gr-rosca svg{width:130px;height:130px}
+}
+.selecao{position:sticky;top:0;z-index:5;border:1px solid var(--acc);border-radius:12px;padding:10px 14px;background:var(--card);display:flex;flex-direction:column;gap:6px;margin-top:14px;min-width:0}
+.selecao .sel-linha{display:flex;gap:8px;align-items:center;flex-wrap:wrap;overflow-wrap:anywhere}
+.selecao .sel-linha .sec,.selecao .sel-acoes .sec{margin:0;padding:2px 10px;font-size:12px}
+.tela button.ativo{background:var(--acc);color:var(--on);border-color:var(--acc);font-weight:700}
+.s-barra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 20px;border-bottom:1px solid var(--bd);background:var(--card);font-size:13px}
+.s-barra strong{overflow-wrap:anywhere}
+.s-barra button{margin:0;padding:3px 12px;font-size:13px}
+.s-barra input{flex:1 1 180px;min-width:0;padding:4px 8px}
+#s-status{flex:1 1 220px;color:var(--mut);overflow-wrap:anywhere;min-height:1.3em}
+#s-status.erro{color:var(--err)}#s-status.ok{color:var(--ok-txt)}
+.s-painel{padding:10px 20px;border-bottom:1px solid var(--bd);background:var(--bg);max-height:42vh;overflow-y:auto;font-size:13px}
+.s-painel h3{margin:8px 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+.s-painel ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.s-item{border:1px solid var(--bd);border-radius:10px;padding:6px 10px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;overflow-wrap:anywhere}
+.s-item.ativa{border-color:var(--acc);border-width:2px}
+.s-item .corpo{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.s-item .meta{color:var(--mut);font-size:12px}
+.s-item button{margin:0;padding:2px 10px;font-size:12px}
+.s-tipo{font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px;background:var(--bar)}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+/* ---- Etapa 8: layout neo-brutalista controlado (três regiões) ---- */
+html,body{overflow:hidden}
+#app{display:grid;grid-template-columns:230px minmax(0,1fr) 310px;height:100vh;height:100dvh}
+#app[data-ins=fechado]{grid-template-columns:230px minmax(0,1fr) 0}
+#lateral{display:flex;flex-direction:column;gap:12px;padding:16px;border-right:2px solid var(--forte);background:var(--card);overflow-y:auto;min-width:0}
+.marca{font-size:20px;font-weight:800;letter-spacing:-.02em;padding:6px 8px;background:var(--amarelo);color:var(--txt);border:2px solid var(--forte);box-shadow:3px 3px 0 var(--sombra);align-self:flex-start}
+:root[data-tema=escuro] .marca{color:#151719}
+#lateral nav{flex-direction:column;flex-wrap:nowrap;gap:8px}
+#lateral nav button{text-align:left;border-radius:6px;border:2px solid var(--forte);background:var(--bg);color:var(--txt);font-weight:600;font-size:14px;padding:10px 12px;min-height:44px}
+#lateral nav button[aria-current="page"]{background:var(--acc);color:var(--on);box-shadow:3px 3px 0 var(--sombra)}
+.lat-perfil{margin:0;font-size:13px;color:var(--mut);overflow-wrap:anywhere}
+#lateral #tema-alt{margin-top:auto}
+#principal{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden}
+.topo-mini{display:none;gap:8px;padding:8px 12px;border-bottom:2px solid var(--forte);background:var(--card)}
+.topo-mini button{margin:0}
+#insights{border-left:2px solid var(--forte);background:var(--card);padding:16px;overflow-y:auto;min-width:0}
+#app[data-ins=fechado] #insights{display:none}
+#insights h2{margin:0 0 12px;font-size:16px;letter-spacing:-.01em}
+.ins{border:2px solid var(--forte);border-radius:6px;padding:10px 12px;margin:0 0 12px;background:var(--bg);display:flex;flex-direction:column;gap:6px;overflow-wrap:anywhere}
+.ins h3{margin:0;font-size:14px}
+.ins p{margin:0;font-size:13px}
+.ins.destaque{border-left:8px solid var(--c-a);box-shadow:3px 3px 0 var(--sombra)}
+.ins.alerta{border-left:8px solid var(--amarelo)}
+.ins.info{border-left:8px solid var(--verde)}
+.ins button{align-self:flex-start;margin:0;padding:6px 10px;font-size:12px;min-height:36px}
+.ins-vazio{color:var(--mut);font-size:13px;margin:0}
+button,input,select{border-color:var(--forte)}
+button{border:2px solid var(--forte);border-radius:6px}
+button:not(.sec):not([aria-current]):hover{box-shadow:3px 3px 0 var(--sombra)}
+input,select,.lado textarea{border:2px solid var(--forte);border-radius:6px}
+.tela .card,.bot,.selecao,.lado,.vaga{border:2px solid var(--forte);border-radius:6px}
+.tela .card,.bot{box-shadow:4px 4px 0 var(--sombra)}
+.user{border-radius:6px;border:2px solid var(--forte)}
+.s-barra,form,.s-painel{border-color:var(--forte)}
+.s-barra{border-bottom-width:2px}form{border-top-width:2px}
+.sec{background:transparent;color:var(--txt)}
+:root[data-tema=escuro] .tag{color:#0b0d12}
+.tela,#chat{max-width:1000px}
+table.tab{min-width:480px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--foco);outline-offset:2px}
+button,select{min-height:40px}
+@media(max-width:1100px){
+  #app,#app[data-ins=fechado]{grid-template-columns:200px minmax(0,1fr)}
+  #insights{display:none;grid-column:1 / -1}
+  #app[data-ins=aberto] #insights{display:block;position:fixed;right:0;top:0;bottom:0;width:min(340px,92vw);z-index:20;box-shadow:-6px 0 0 var(--sombra)}
+  .topo-mini{display:flex}
+}
+@media(max-width:760px){
+  #app,#app[data-ins=fechado]{grid-template-columns:minmax(0,1fr)}
+  #lateral{display:none}
+  #app[data-nav=aberta] #lateral{display:flex;position:fixed;left:0;top:0;bottom:0;width:min(280px,88vw);z-index:30;box-shadow:6px 0 0 var(--sombra)}
+  .tela,#chat{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
-<header>
-  <span>Requisitos mais pedidos em vagas</span>
+<div id="app" data-nav="fechada" data-ins="aberto">
+<aside id="lateral" aria-label="Menu lateral">
+  <div class="marca">JobInsight</div>
   <nav aria-label="Navegação principal">
     <button type="button" id="nav-vagas" aria-current="page">Vagas</button>
     <button type="button" id="nav-hab">Vagas por habilidades</button>
     <button type="button" id="nav-evo">Evolução por senioridade</button>
+    <button type="button" id="nav-cmp">Comparar vagas</button>
     <button type="button" id="nav-perfil">Perfil</button>
   </nav>
-</header>
+  <p class="lat-perfil" id="lat-perfil">Perfil local</p>
+  <button type="button" id="tema-alt" class="sec" aria-pressed="false">Tema escuro</button>
+</aside>
+<div id="principal">
+<div class="topo-mini">
+  <button type="button" id="menu-alt" class="sec" aria-expanded="false" aria-controls="lateral">☰ Menu</button>
+  <button type="button" id="ins-alt" class="sec" aria-expanded="true" aria-controls="insights">Insights</button>
+</div>
+<div class="s-barra" id="s-barra" role="region" aria-label="Conversa atual">
+  <span>Conversa: <strong id="s-titulo">nenhuma ativa</strong><span id="s-ativa" class="s-tipo" hidden style="margin-left:6px">ativa</span></span>
+  <input id="s-input" hidden maxlength="80" aria-label="Novo título da conversa" placeholder="Novo título">
+  <button type="button" id="s-salvar-nome" hidden>Salvar nome</button>
+  <button type="button" id="s-renomear" class="sec" disabled>Renomear</button>
+  <button type="button" id="s-nova">+ Nova conversa</button>
+  <button type="button" id="s-hist" class="sec" aria-expanded="false" aria-controls="s-painel">Histórico</button>
+  <span id="s-status" role="status" aria-live="polite"></span>
+</div>
+<section class="s-painel" id="s-painel" hidden aria-label="Histórico de conversas">
+  <h3>Conversas salvas</h3>
+  <p id="s-lista-msg" class="nota"></p>
+  <ul id="s-lista"></ul>
+  <h3>Análises desta conversa</h3>
+  <p id="s-linha-msg" class="nota"></p>
+  <ul id="s-linha"></ul>
+</section>
 <main id="perfil" class="tela" hidden aria-labelledby="perfil-titulo">
   <div class="card">
     <h2 id="perfil-titulo" style="margin:0;font-size:17px">Perfil</h2>
@@ -144,6 +281,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <button type="button" id="h-voltar" class="sec" style="margin:0">← Voltar às vagas</button>
     </div>
   </div>
+  <div id="h-selecao" class="selecao" hidden role="region" aria-label="Vagas selecionadas para comparar" aria-live="polite"></div>
   <div id="h-resultado" class="card" style="margin-top:14px" hidden aria-live="polite"></div>
   <div class="acoes" style="margin-top:12px"><button type="button" id="h-mais" class="sec" style="margin:0" hidden>Carregar mais resultados</button></div>
 </main>
@@ -165,6 +303,21 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   <p class="nota" id="e-inicial" style="margin-top:14px">Nenhuma análise realizada ainda. Informe um cargo e clique em Analisar.</p>
   <div id="e-resultado" class="card" style="margin-top:14px" hidden aria-live="polite"></div>
 </main>
+<main id="cmp" class="tela" hidden aria-labelledby="cmp-titulo">
+  <div class="card">
+    <h2 id="cmp-titulo" style="margin:0;font-size:17px">Comparar vagas</h2>
+    <p class="nota">Escolha duas vagas (de buscas independentes, de áreas diferentes ou digitadas por você) e veja semelhanças e diferenças de requisitos. A comparação descreve os anúncios; não indica qual vaga é melhor.</p>
+    <p class="status" id="m-status" role="status" aria-live="polite"></p>
+    <div class="duas" id="m-lados"></div>
+    <p class="nota" id="m-estado"></p>
+    <div class="acoes">
+      <button type="button" id="m-comparar" disabled>Comparar</button>
+      <button type="button" id="m-limpar" class="sec" style="margin:0">Refazer com outras vagas</button>
+      <button type="button" id="m-voltar" class="sec" style="margin:0">← Voltar às vagas</button>
+    </div>
+  </div>
+  <div id="m-resultado" style="margin-top:14px" hidden aria-live="polite"></div>
+</main>
 <div id="chat" role="log" aria-live="polite"></div>
 <form id="form"><div class="bar">
   <input id="q" aria-label="Cargo ou área" placeholder="Cargo ou área (ex.: desenvolvedor Kotlin jr)" autocomplete="off" autofocus>
@@ -176,6 +329,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   <button type="button" id="cancel" class="sec" style="margin:0" hidden>Cancelar</button>
 </div></form>
 <div class="hint" id="hint" aria-live="polite">Cada página gasta 1 requisição da sua cota (no JSearch, ~10 vagas por página).</div>
+</div>
+<aside id="insights" aria-labelledby="ins-titulo">
+  <h2 id="ins-titulo">O que os dados revelam?</h2>
+  <div id="ins-corpo" aria-live="polite"></div>
+</aside>
+</div>
 <script>
 const chat = document.getElementById('chat'), q = document.getElementById('q'),
       pages = document.getElementById('paginas'), btn = document.getElementById('btn');
@@ -193,26 +352,133 @@ function add(role) {
   chat.scrollTop = chat.scrollHeight;
   return m;
 }
-function bars(box, titulo, itens, n) {
-  if (!itens || !itens.length) return;
-  box.appendChild(el('h4', null, titulo));
-  itens.slice(0, n).forEach(i => {
-    const row = el('div', 'row'), track = el('div', 'track'), fill = el('div', 'fill');
-    fill.style.width = i.percentual + '%';
-    track.appendChild(fill);
-    row.append(el('span', 'name', i.nome), track, el('span', 'pct', i.percentual + '% · ' + i.vagas));
-    box.appendChild(row);
+// ---------- Gráficos (CSS/SVG nativos). Só desenham números que o backend já calculou; nada é recalculado aqui. ----------
+function figuraGr(o) {
+  const f = el('figure', 'gr'); f.style.margin = '6px 0 16px';
+  f.appendChild(el('figcaption', 'gr-titulo', o.titulo));
+  if (o.subtitulo) f.appendChild(el('p', 'gr-sub', o.subtitulo));
+  return f;
+}
+function textoAltGr(fig, itens) {   // mesma fonte (nome + texto) das barras: o texto e o gráfico não podem divergir
+  const det = el('details', 'gr-texto'); det.appendChild(el('summary', null, 'Ver valores em texto'));
+  const ul = el('ul');
+  itens.forEach(i => ul.appendChild(el('li', null, `${i.nome}: ${i.texto}` + (i.detalhe ? ` · ${i.detalhe}` : ''))));
+  det.appendChild(ul); fig.appendChild(det);
+}
+function legendaGr(fig, itens) {
+  const ul = el('ul', 'gr-legenda');
+  itens.forEach(i => { const li = el('li', 'gr-leg'); const p = el('span', 'gr-ponto ' + i.cls); p.setAttribute('aria-hidden', 'true'); li.append(p, document.createTextNode(i.rotulo)); ul.appendChild(li); });
+  fig.appendChild(ul);
+}
+function verMaisGr(fig, linhas, inicial) {
+  if (linhas.length <= inicial) return;
+  const extra = linhas.length - inicial;
+  linhas.forEach((r, k) => { if (k >= inicial) { r.classList.add('gr-extra'); r.hidden = true; } });
+  const b = el('button', 'sec', `Ver mais ${extra}`); b.type = 'button'; b.setAttribute('aria-expanded', 'false');
+  b.onclick = () => {
+    const abrir = b.getAttribute('aria-expanded') === 'false';
+    linhas.forEach((r, k) => { if (k >= inicial) r.hidden = !abrir; });
+    b.setAttribute('aria-expanded', String(abrir)); b.textContent = abrir ? 'Ver menos' : `Ver mais ${extra}`;
+  };
+  fig.appendChild(b);
+}
+const larguraGr = (valor, max) => (typeof valor !== 'number' || !Number.isFinite(valor) || !(max > 0)) ? 0 : Math.max(0, Math.min(100, (valor / max) * 100));
+// Barras horizontais. itens: [{nome, valor, texto, detalhe?, segmentos?: [{parte(0-1), cls}]}]; escala fixa 0..max (padrão 100 = % das vagas).
+function _graficoBarras(box, o) {
+  const itens = (o.itens || []).filter(i => i && i.nome);
+  if (!itens.length) return null;
+  const max = o.max || 100, fig = figuraGr(o), lista = el('div', 'gr-lista'); lista.setAttribute('role', 'list');
+  const linhas = itens.map(i => {
+    const row = el('div', 'gr-row'); row.setAttribute('role', 'listitem'); row.setAttribute('aria-label', `${i.nome}: ${i.texto}`);
+    const trilho = el('span', 'gr-trilho'), barra = el('span', 'gr-barra'); trilho.setAttribute('aria-hidden', 'true');
+    barra.style.width = larguraGr(i.valor, max) + '%';
+    (i.segmentos || []).forEach(sg => { const x = el('span', 'gr-seg ' + sg.cls); x.style.width = Math.max(0, Math.min(1, sg.parte)) * 100 + '%'; barra.appendChild(x); });
+    trilho.appendChild(barra);
+    row.append(el('span', 'gr-nome', i.nome), trilho, el('span', 'gr-valor', i.texto));
+    lista.appendChild(row);
+    return row;
   });
+  fig.appendChild(lista);
+  if (o.legenda) legendaGr(fig, o.legenda);
+  verMaisGr(fig, linhas, o.inicial || itens.length);
+  if (o.textoAlt !== false) textoAltGr(fig, itens);
+  box.appendChild(fig);
+  return fig;
+}
+// Barras agrupadas (uma sub-barra por série, com o nome da série escrito: a cor não é o único código). valor null = sem dados.
+function _graficoAgrupado(box, o) {
+  const itens = (o.itens || []).filter(i => i && i.nome);
+  if (!itens.length) return null;
+  const max = o.max || 100, fig = figuraGr(o), lista = el('div', 'gr-lista'); lista.setAttribute('role', 'list');
+  const linhas = itens.map(i => {
+    const g = el('div', 'gr-grupo'); g.setAttribute('role', 'listitem');
+    g.setAttribute('aria-label', `${i.nome}: ` + o.series.map((s, k) => `${s.rotulo} ${i.valores[k].texto}`).join('; '));
+    g.appendChild(el('div', 'gr-nome', i.nome));
+    o.series.forEach((s, k) => {
+      const v = i.valores[k], row = el('div', 'gr-row'), trilho = el('span', 'gr-trilho'), barra = el('span', 'gr-barra ' + s.cls);
+      trilho.setAttribute('aria-hidden', 'true'); barra.style.width = larguraGr(v.valor, max) + '%'; trilho.appendChild(barra);
+      row.append(el('span', 'gr-nome', s.rotulo), trilho, el('span', 'gr-valor', v.texto));
+      g.appendChild(row);
+    });
+    lista.appendChild(g);
+    return g;
+  });
+  fig.appendChild(lista);
+  legendaGr(fig, o.series);
+  verMaisGr(fig, linhas, o.inicial || itens.length);
+  if (o.textoAlt !== false) textoAltGr(fig, itens.map(i => ({nome: i.nome, texto: o.series.map((s, k) => `${s.rotulo} ${i.valores[k].texto}`).join(' · ')})));
+  box.appendChild(fig);
+  return fig;
+}
+// Rosca: só para partes EXCLUSIVAS de um mesmo total. partes: [{nome, valor, texto}]; os nomes ficam na legenda, nunca dentro do desenho.
+function _graficoRosca(box, o) {
+  const partes = (o.partes || []).filter(p => p && p.valor > 0);
+  const soma = partes.reduce((a, p) => a + p.valor, 0);
+  if (!partes.length || !(soma > 0)) return null;
+  const fig = figuraGr(o), NS = 'http://www.w3.org/2000/svg', r = 45, C = 2 * Math.PI * r;
+  const wrap = el('div', 'gr-rosca'), svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 120 120'); svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', `${o.titulo}: ` + partes.map(p => `${p.nome} ${p.texto}`).join('; '));
+  let acc = 0;
+  partes.forEach((p, k) => {
+    const len = (p.valor / soma) * C, c = document.createElementNS(NS, 'circle');
+    c.setAttribute('class', `gr-fatia ${p.cls || 'd' + ((k % 8) + 1)}`); c.setAttribute('cx', '60'); c.setAttribute('cy', '60'); c.setAttribute('r', String(r));
+    c.setAttribute('stroke-dasharray', `${len} ${C - len}`); c.setAttribute('stroke-dashoffset', String(-acc)); c.setAttribute('transform', 'rotate(-90 60 60)');
+    svg.appendChild(c); acc += len;
+  });
+  const t1 = document.createElementNS(NS, 'text'); t1.setAttribute('class', 'gr-centro'); t1.setAttribute('x', '60'); t1.setAttribute('y', '62'); t1.textContent = String(o.total);
+  const t2 = document.createElementNS(NS, 'text'); t2.setAttribute('class', 'gr-centro-sub'); t2.setAttribute('x', '60'); t2.setAttribute('y', '74'); t2.textContent = o.totalRotulo || 'vagas';
+  svg.append(t1, t2);
+  const ul = el('ul', 'gr-legenda'); ul.style.flexDirection = 'column';
+  partes.forEach((p, k) => { const li = el('li', 'gr-leg'), pt = el('span', `gr-ponto ${p.cls || 'd' + ((k % 8) + 1)}`); pt.setAttribute('aria-hidden', 'true'); li.append(pt, document.createTextNode(`${p.nome}: ${p.texto}`)); ul.appendChild(li); });
+  wrap.append(svg, ul); fig.appendChild(wrap);
+  box.appendChild(fig);
+  return fig;
+}
+// Um erro ao desenhar um gráfico nunca derruba a tela: mostra um aviso e os valores continuam disponíveis em texto.
+function desenharSeguro(fn, box, o) {
+  try { return fn(box, o); }
+  catch (err) { box.appendChild(el('p', 'aviso', 'Não foi possível desenhar o gráfico' + (o && o.titulo ? ` “${o.titulo}”` : '') + '; os valores estão nas listas e tabelas em texto.')); return null; }
+}
+function graficoBarras(box, o) { return desenharSeguro(_graficoBarras, box, o); }
+function graficoAgrupado(box, o) { return desenharSeguro(_graficoAgrupado, box, o); }
+function graficoRosca(box, o) { return desenharSeguro(_graficoRosca, box, o); }
+const COR_NIVEL = {junior: 'c-jr', pleno: 'c-pl', senior: 'c-sr'};
+function itensRank(lista, n) {   // % e contagens vêm prontos do backend (aggregate.py): a proporção é de VAGAS da amostra
+  return (lista || []).map(i => ({nome: i.nome, valor: i.percentual, texto: `${i.percentual}% (${i.vagas} de ${n} vagas)`}));
 }
 function render(box, d) {
   box.appendChild(el('p', 'lead', `${d.novas ? 'Encontrei ' + d.vagas_analisadas + ' vagas novas' : 'Analisei ' + d.vagas_analisadas + ' vagas'} para “${d.cargo}”.`));
-  bars(box, 'Tecnologias mais pedidas', d.tecnologias, 10);
-  bars(box, 'Diferenciais', d.diferenciais, 5);
-  if (d.soft_skills && d.soft_skills.length) {
-    box.appendChild(el('h4', null, 'Soft skills'));
-    const chips = el('div', 'chips');
-    d.soft_skills.slice(0, 6).forEach(s => chips.appendChild(el('span', 'chip', `${s.nome} · ${s.percentual}%`)));
-    box.appendChild(chips);
+  const n = d.vagas_analisadas, esc = `% das ${n} vagas analisadas que citam o item (escala de 0% a 100%)`;
+  graficoBarras(box, {titulo: 'Tecnologias mais pedidas', subtitulo: esc, itens: itensRank(d.tecnologias, n), inicial: 10});
+  graficoBarras(box, {titulo: 'Diferenciais', subtitulo: esc, itens: itensRank(d.diferenciais, n), inicial: 5});
+  graficoBarras(box, {titulo: 'Soft skills', subtitulo: esc, itens: itensRank(d.soft_skills, n), inicial: 8});
+  const det = d.niveis_detalhe;   // ausente em resultados antigos guardados no navegador: aí só o texto abaixo é mostrado
+  if (det) {
+    const com = det.filter(x => x.nivel !== 'nao_informado');
+    if (com.length) graficoBarras(box, {titulo: 'Distribuição por nível indicado', itens: det.map(x => ({nome: NIVEIS[x.nivel] || x.nivel, valor: x.percentual, texto: `${x.percentual}% (${x.vagas} de ${n} vagas)`})),
+      subtitulo: `Cada vaga analisada entra em um único nível; "Não informado" = o anúncio não indicou (escala de 0% a 100%)`});
+    else box.appendChild(el('p', 'meta', 'Nenhuma vaga indicou o nível: o gráfico de distribuição por nível foi omitido (dados insuficientes).'));
   }
   const niveis = Object.entries(d.niveis || {}).map(([k, v]) => `${NIVEIS[k] || k} ${v}`).join(' · ');
   let meta = niveis ? 'Níveis: ' + niveis : '';
@@ -236,10 +502,7 @@ function render(box, d) {
 }
 
 const form = document.getElementById('form'), cancel = document.getElementById('cancel'), hint = document.getElementById('hint');
-const KEY = 'vagas-historico';
-let hist = [];
-try { hist = JSON.parse(localStorage.getItem(KEY)) || []; } catch {}
-const salvar = () => { try { localStorage.setItem(KEY, JSON.stringify(hist.slice(-20))); } catch {} };
+const LEGADO_KEY = 'vagas-historico';   // histórico antigo do navegador: só lido uma vez, para importar para uma sessão
 
 function markdown(d) {
   const l = [`**${d.vagas_analisadas} vagas para “${d.cargo}”**`, ''];
@@ -278,7 +541,6 @@ const ex = el('div', 'ex');
   ex.appendChild(b);
 });
 hello.appendChild(ex);
-hist.forEach(h => { add('user').textContent = h.q; const b = add('bot'); render(b, h.d); extras(b, h.d); });
 // só a última resposta mantém o botão "Buscar novas vagas"
 document.querySelectorAll('.novas').forEach((b, i, todos) => { if (i < todos.length - 1) b.remove(); });
 status();
@@ -299,34 +561,39 @@ async function buscar(texto, novas = false) {
   btn.disabled = true;
   cancel.hidden = false;
   ctrl = new AbortController();
+  const token = SESS.token;                       // esta análise pertence à conversa que estava ativa agora
   try {
+    const sid = await sGarantir(texto);
+    if (token !== SESS.token) return;             // trocou de conversa antes de a busca começar
     const r = await fetch('/chat', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({mensagem: texto, pais: 'br', paginas: +pages.value, apenas_novas: novas}),
+      body: JSON.stringify({mensagem: texto, pais: 'br', paginas: +pages.value, apenas_novas: novas, ...sCampos(sid)}),
       signal: ctrl.signal,
     });
     const j = await r.json();
     if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail));
+    if (token !== SESS.token) { sAvisoTardio(rotulo, j); return; }   // resposta tardia: já está salva na conversa de origem, não entra nesta
     bot.textContent = '';
     if (j.dados.sem_novas) {
       bot.textContent = j.dados.aviso;
     } else {
       render(bot, j.dados);
       extras(bot, j.dados);
-      hist.push({q: rotulo, d: j.dados});
-      salvar();
     }
+    insDefinir('vagas', j.insights);
+    sAposInteracao(j, bot);
   } catch (err) {
-    bot.classList.add('err');
-    bot.textContent = err.name === 'AbortError' ? 'Busca cancelada.' : 'Erro: ' + err.message;
+    if (token === SESS.token) { bot.classList.add('err'); bot.textContent = err.name === 'AbortError' ? 'Busca cancelada.' : 'Erro: ' + err.message; }
   } finally {
     clearInterval(tick);
-    btn.disabled = false;
-    cancel.hidden = true;
-    chat.scrollTop = chat.scrollHeight;
-    q.focus();
-    status();
+    if (token === SESS.token) {
+      btn.disabled = false;
+      cancel.hidden = true;
+      chat.scrollTop = chat.scrollHeight;
+      q.focus();
+      status();
+    }
   }
 }
 
@@ -373,7 +640,7 @@ function pDesenhar() {
   P.contador.textContent = `${pAreas.length}/${pLimites.max_areas} áreas`;
 }
 function pAplicar(d) {
-  P.nome.value = d.nome;
+  P.nome.value = d.nome; latPerfil(d.nome);
   pAreas = d.areas.slice();
   pLimites = d.limites || pLimites;
   P.quando.textContent = d.atualizado_em ? 'Última atualização: ' + new Date(d.atualizado_em).toLocaleString('pt-BR') : '';
@@ -437,7 +704,7 @@ async function pSalvar() {
   }
 }
 // ---------- Navegação entre telas ----------
-const navHab = document.getElementById('nav-hab'), navEvo = document.getElementById('nav-evo');
+const navHab = document.getElementById('nav-hab'), navEvo = document.getElementById('nav-evo'), navCmp = document.getElementById('nav-cmp');
 let telaAtual = 'vagas';
 function alteracoesPendentes() {
   if (telaAtual === 'perfil') return pSujo || P.area.value.trim();
@@ -455,18 +722,22 @@ function mostrar(tela) {
   P.perfil.hidden = tela !== 'perfil';
   H.tela.hidden = tela !== 'hab';
   E.tela.hidden = tela !== 'evo';
+  $h('cmp').hidden = tela !== 'cmp';
   chat.hidden = form.hidden = hint.hidden = tela !== 'vagas';
-  [[navVagas, 'vagas'], [navHab, 'hab'], [navEvo, 'evo'], [navPerfil, 'perfil']].forEach(([b, t]) => {
+  [[navVagas, 'vagas'], [navHab, 'hab'], [navEvo, 'evo'], [navCmp, 'cmp'], [navPerfil, 'perfil']].forEach(([b, t]) => {
     if (t === tela) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   if (tela === 'perfil') { pCarregar(); P.nome.focus(); } else pSeq++;
   if (tela === 'hab') { hCarregar(); H.input.focus(); } else H.seq++;
   if (tela === 'evo') { E.cargo.focus(); ePlano(); }
   if (tela === 'vagas') q.focus();
+  APP.dataset.nav = 'fechada'; document.getElementById('menu-alt').setAttribute('aria-expanded', 'false');
+  insRender();
 }
 navPerfil.onclick = () => ir('perfil');
 navHab.onclick = () => ir('hab');
 navEvo.onclick = () => ir('evo');
+navCmp.onclick = () => ir('cmp');
 navVagas.onclick = () => ir('vagas');
 P.voltar.onclick = () => ir('vagas');
 P.recarregar.onclick = pCarregar;
@@ -617,7 +888,47 @@ function hCartao(v) {
   const extra = [v.nivel && 'nível citado: ' + v.nivel, v.anos_experiencia_min != null && 'experiência mínima citada: ' + v.anos_experiencia_min + ' ano(s)'].filter(Boolean);
   if (extra.length) c.appendChild(el('p', 'sub', extra.join(' · ')));
   v.avisos.forEach(a => c.appendChild(el('p', 'aviso', a)));
+  if (v.ref) {
+    const acoes = el('div', 'acoes');
+    ['a', 'b'].forEach(lado => {
+      const b = el('button', 'sec', `Usar como vaga ${lado.toUpperCase()}`); b.type = 'button'; b.style.margin = '0';
+      b.dataset.lado = lado; b.dataset.chave = chaveBusca(v.provedor, v.id); b.setAttribute('aria-pressed', 'false');
+      b.onclick = () => {
+        // a seleção guarda a referência completa (consulta, país, páginas e o ID ORIGINAL): continua válida mesmo que a lista mude
+        cmpDefinir(lado, {tipo: 'busca', ...v.ref, id: v.id, provedor: v.provedor || null,
+          resumo: {titulo: v.titulo, empresa: v.empresa, local: v.local, link: v.link, provedor: v.provedor || null, tem_descricao: true}});
+        hMsg(`Vaga ${lado.toUpperCase()} definida: “${v.titulo || '(sem título)'}”. Veja “Vagas para comparar” e abra Comparar vagas.`, 'ok');
+      };
+      acoes.appendChild(b);
+    });
+    c.appendChild(acoes);
+  }
   return c;
+}
+function hBotoesAtualizar() {   // rótulo e estado de cada botão A/B refletem a seleção real (CMP)
+  document.querySelectorAll('#h-resultado button[data-lado]').forEach(b => {
+    const L = b.dataset.lado, ativo = !!CMP[L] && chaveSel(CMP[L]) === b.dataset.chave;
+    b.textContent = ativo ? `Selecionada como vaga ${L.toUpperCase()}` : `Usar como vaga ${L.toUpperCase()}`;
+    b.setAttribute('aria-pressed', String(ativo)); b.classList.toggle('ativo', ativo);
+  });
+}
+function hSelecaoAtualizar(info) {
+  const bar = $h('h-selecao');
+  hBotoesAtualizar();
+  bar.replaceChildren();
+  if (!CMP.a && !CMP.b) { bar.hidden = true; return; }
+  bar.hidden = false;
+  bar.appendChild(el('strong', null, 'Vagas para comparar'));
+  ['a', 'b'].forEach(L => {
+    const s = CMP[L], linha = el('div', 'sel-linha');
+    linha.appendChild(el('span', 'tag', 'Vaga ' + L.toUpperCase()));
+    linha.appendChild(el('span', null, s ? `${s.resumo.titulo || '(sem título)'}${s.resumo.empresa ? ' · ' + s.resumo.empresa : ''}` : 'ainda não selecionada'));
+    if (s) { const x = el('button', 'sec', 'Remover'); x.type = 'button'; x.setAttribute('aria-label', `Remover a vaga ${L.toUpperCase()}`); x.onclick = () => cmpDefinir(L, null); linha.appendChild(x); }
+    bar.appendChild(linha);
+  });
+  bar.appendChild(el('p', 'nota', (info || mEstadoInfo()).texto));
+  const acoes = el('div', 'sel-acoes'), abrir = el('button', null, 'Abrir Comparar vagas'); abrir.type = 'button'; abrir.onclick = () => ir('cmp');
+  acoes.appendChild(abrir); bar.appendChild(acoes);
 }
 function hRenderizar(d) {
   const box = H.resultado; box.replaceChildren(); box.hidden = false;
@@ -635,6 +946,10 @@ function hRenderizar(d) {
   const L = d.lacunas;
   box.appendChild(el('p', 'nota', 'Requisitos que aparecem nas vagas avaliadas e ainda não constam no seu perfil. Isso não prova que você não saiba usá-los: pode só não estar cadastrado. '
     + `Base: ${L.base} vaga(s) avaliada(s).`));
+  graficoBarras(box, {titulo: 'Habilidades a desenvolver, por relevância', subtitulo: `% das ${L.base} vagas avaliadas que citam a habilidade (não cadastrada no perfil); escala de 0% a 100%. Cor: como aparece nas vagas.`,
+    itens: L.itens.map(i => ({nome: i.nome, valor: i.percentual, texto: `${i.percentual}% (${i.vagas} de ${L.base} vagas)`,
+      segmentos: i.vagas ? [{parte: i.como_obrigatoria / i.vagas, cls: 'c-obrig'}, {parte: i.como_diferencial / i.vagas, cls: 'c-dif'}] : []})),
+    legenda: [{cls: 'c-obrig', rotulo: 'obrigatória'}, {cls: 'c-dif', rotulo: 'diferencial'}], inicial: 10, textoAlt: false});
   if (!L.itens.length) box.appendChild(el('p', 'vazio', L.base ? 'Todos os requisitos identificados já constam no seu perfil.' : 'Sem vagas avaliadas para calcular prioridades.'));
   L.itens.forEach(i => {
     const row = el('div', 'lac');
@@ -652,29 +967,37 @@ function hRenderizar(d) {
     vs.forEach(v => lista.appendChild(hCartao(v)));
     box.appendChild(lista);
   });
+  hBotoesAtualizar();
 }
+
 async function hBuscar(maisPaginas) {
   if (H.buscando) return;
   if (!H.itens.length) return hMsg('Adicione ao menos uma habilidade (por exemplo: Python, React, SQL) para buscar vagas.', 'erro');
   if (!maisPaginas && H.input.value.trim()) return hMsg('Há texto no campo de habilidade que ainda não foi adicionado. Clique em Adicionar ou apague-o.', 'erro');
   const base = maisPaginas ? H.ultima : {habilidades: hNomes(), area: H.area.value || null};
   const paginas = maisPaginas ? H.paginasCarregadas + 1 : +H.paginas.value;
+  const token = SESS.token;
   H.buscando = true; H.buscar.disabled = true; H.mais.disabled = true;
   hMsg(maisPaginas ? 'Carregando mais resultados…' : 'Buscando e analisando vagas… isso pode levar alguns segundos.');
   try {
+    const sid = await sGarantir(base.habilidades.join(', '));
+    if (token !== SESS.token) return;
     const r = await fetch('/busca-habilidades', {method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({...base, pais: 'br', paginas})});
+      body: JSON.stringify({...base, pais: 'br', paginas, ...sCampos(sid)})});
     if (!r.ok) throw new Error(await pErroDe(r));
     const d = await r.json();
+    if (token !== SESS.token) { sAvisoTardio(base.habilidades.join(', '), d); return; }
     const semNovas = maisPaginas && H.retornadas !== null && d.contagens.retornadas <= H.retornadas;
     H.ultima = base; H.paginasCarregadas = d.paginas; H.retornadas = d.contagens.retornadas;
     hRenderizar(d);
     H.mais.hidden = !d.pode_carregar_mais || semNovas || d.estado === 'sem_vagas';
     hMsg(semNovas ? 'Não há mais resultados para essa busca.' : (d.estado === 'sem_vagas' ? 'Busca concluída: nenhuma vaga encontrada.' : 'Busca concluída.'), semNovas ? '' : 'ok');
     if (!d.pode_carregar_mais && d.estado === 'ok' && !semNovas) hMsg(`Busca concluída. Limite de ${d.max_paginas} páginas por consulta atingido.`, 'ok');
+    insDefinir('hab', d.insights);
+    sAposInteracao(d);
   } catch (err) {
-    hMsg('Não foi possível concluir a busca: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
-  } finally { H.buscando = false; H.buscar.disabled = false; H.mais.disabled = false; }
+    if (token === SESS.token) hMsg('Não foi possível concluir a busca: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
+  } finally { if (token === SESS.token) { H.buscando = false; H.buscar.disabled = false; H.mais.disabled = false; } }
 }
 H.add.onclick = hAdicionar;
 H.salvar.onclick = hSalvar;
@@ -744,6 +1067,13 @@ function eRenderizar(d) {
     + `Não classificadas: ${k.nao_classificadas.total} (${k.nao_classificadas.conflitante} com informações conflitantes, ${k.nao_classificadas.informacao_insuficiente} com informação insuficiente).`
     + (k.fora_do_contexto ? ` ${k.fora_do_contexto} fora do contexto da pesquisa.` : '')));
   d.avisos.forEach(a => box.appendChild(el('p', 'aviso', a)));
+  graficoRosca(box, {titulo: 'Como as vagas coletadas foram classificadas', subtitulo: 'Divisão do total de vagas únicas coletadas: cada vaga está em uma só categoria.', total: k.unicas, totalRotulo: 'vagas',
+    partes: (d.distribuicao || []).map(x => ({nome: x.rotulo, valor: x.vagas, texto: `${x.vagas} (${x.percentual}%)`}))});
+  const maxC = Math.max(0, ...NV.map(n => d.niveis[n].coletadas));
+  if (maxC > 0) graficoAgrupado(box, {titulo: 'Vagas por nível: coletadas e analisadas', subtitulo: 'Quantidades de vagas, na mesma escala (o maior valor ocupa a barra inteira). Níveis com amostra pequena são só indicativos.', max: maxC, textoAlt: false,
+    series: [{rotulo: 'Coletadas', cls: 'c-coletada'}, {rotulo: 'Analisadas', cls: 'c-analisada'}],
+    itens: NV.map(n => ({nome: ROT[n] + (['adequada', 'sem_dados'].includes(d.niveis[n].cobertura) ? '' : ' (amostra pequena)'),
+      valores: [{valor: d.niveis[n].coletadas, texto: String(d.niveis[n].coletadas)}, {valor: d.niveis[n].analisadas, texto: String(d.niveis[n].analisadas)}]}))});
   if (d.estado === 'sem_vagas') { box.appendChild(el('p', null, 'Nenhuma vaga encontrada para esse cargo. Tente outro termo ou mais páginas.')); return; }
   if (d.estado === 'sem_classificadas') {
     box.appendChild(el('p', null, 'Nenhuma vaga pôde ser classificada como júnior, pleno ou sênior; os dados são incompatíveis com a comparação por nível. Tente um cargo mais específico ou mais páginas.'));
@@ -762,9 +1092,13 @@ function eRenderizar(d) {
     if (!c.itens.length) { box.appendChild(el('p', 'vazio', 'Nenhuma habilidade atende ao critério nesta amostra.')); return; }
     const ul = el('ul');
     c.itens.forEach(i => ul.appendChild(el('li', null, `${i.nome}: júnior ${fp(i.pct.junior)} → pleno ${fp(i.pct.pleno)} → sênior ${fp(i.pct.senior)}`
-      + (i.diferenca_pp !== null ? ` (${fpp(i.diferenca_pp)})` : '') + (i.vagas_destino ? ` · no nível de destino: obrigatória em ${i.obrigatoria_destino}, diferencial em ${i.diferencial_destino} vaga(s)` : ''))));
+      + (i.diferenca_pp !== null ? ` (${fpp(c.id.startsWith('diminuem') ? -i.diferenca_pp : i.diferenca_pp)})` : '') + (i.vagas_destino ? ` · no nível de destino: obrigatória em ${i.obrigatoria_destino}, diferencial em ${i.diferencial_destino} vaga(s)` : ''))));
     box.appendChild(ul);
   });
+  graficoAgrupado(box, {titulo: 'Principais habilidades por nível', subtitulo: '% das vagas analisadas de cada nível que citam a habilidade (escala de 0% a 100%). "sem dados" = nenhum anúncio analisado naquele nível. A tabela abaixo traz os mesmos valores em texto.',
+    series: NV.map(n => ({rotulo: ROT[n], cls: COR_NIVEL[n]})), inicial: 6, textoAlt: false,
+    itens: d.habilidades.slice(0, 10).map(h => ({nome: h.nome, valores: NV.map(n => { const den = d.niveis[n].analisadas, x = h.niveis[n];
+      return den ? {valor: x.pct, texto: `${fp(x.pct)} (${x.vagas}/${den})`} : {valor: null, texto: 'sem dados'}; })}))});
   box.appendChild(el('h4', null, 'Habilidades por nível'));
   box.appendChild(el('p', 'nota', 'Percentual das vagas analisadas do nível que citam a habilidade (vagas que citam / vagas analisadas). Cada habilidade conta uma vez por vaga. “Obrig.” e “dif.” separam obrigatórios e diferenciais; “não classif.” são menções sem marcação explícita no anúncio.'));
   box.appendChild(tabela(['Habilidade', 'Júnior', 'Pleno', 'Sênior', 'Júnior → Pleno', 'Pleno → Sênior'],
@@ -822,25 +1156,663 @@ async function eAnalisar() {
   if (E.ocupado) return;
   const cargo = E.cargo.value.trim();
   if (cargo.length < 2) return eMsg('Informe um cargo, tecnologia ou área (por exemplo: Desenvolvedor React Native).', 'erro');
+  const token = SESS.token;
   E.ocupado = true; E.analisar.disabled = true;
   E.resultado.hidden = true;                                  // resultado anterior não fica na tela como se fosse o novo
   eMsg('Coletando e analisando vagas dos três níveis… isso pode levar alguns segundos.');
   try {
-    const r = await fetch('/evolucao', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({cargo, paginas: +E.paginas.value})});
+    const sid = await sGarantir(cargo);
+    if (token !== SESS.token) return;
+    const r = await fetch('/evolucao', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({cargo, paginas: +E.paginas.value, ...sCampos(sid)})});
     if (!r.ok) throw new Error(await pErroDe(r));
     const d = await r.json();
+    if (token !== SESS.token) { sAvisoTardio(cargo, d); return; }
     eRenderizar(d);
     const parcial = Object.values(d.status_consultas).some(s => s !== 'ok');
     eMsg(d.estado === 'sem_vagas' ? 'Análise concluída: nenhuma vaga encontrada.' : (parcial ? 'Análise concluída com resultados parciais.' : 'Análise concluída.'), parcial ? '' : 'ok');
+    insDefinir('evo', d.insights);
+    sAposInteracao(d);
   } catch (err) {
-    eMsg('Não foi possível concluir a análise: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
-  } finally { E.ocupado = false; E.analisar.disabled = false; }
+    if (token === SESS.token) eMsg('Não foi possível concluir a análise: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
+  } finally { if (token === SESS.token) { E.ocupado = false; E.analisar.disabled = false; } }
 }
 E.analisar.onclick = eAnalisar;
 E.voltar.onclick = () => ir('vagas');
 E.cargo.addEventListener('input', () => { clearTimeout(E.timer); E.timer = setTimeout(ePlano, 250); });
 E.cargo.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); eAnalisar(); } });
 E.paginas.onchange = ePlano;
+// ---------- Comparar vagas ----------
+const CMP = { a: null, b: null, seq: 0, comparando: false };   // seleção de cada lado (isoladas) e contador da comparação em andamento
+const MS = {};                                                  // elementos de cada lado
+const mMsg = (t, tipo) => { $h('m-status').textContent = t || ''; $h('m-status').className = 'status' + (tipo ? ' ' + tipo : ''); };
+// Espelham os limites do backend (app/comparador.py); um teste confere que continuam iguais. O ID do anúncio é opaco: nunca é alterado.
+const LIM = {titulo: 200, empresa: 120, link: 500, descricao: 8000, id: 1024, consulta: 184, paginas: 5};
+const chaveBusca = (provedor, id) => 'busca|' + (provedor || '') + '|' + id;      // identidade = provedor + ID de origem (nunca só o título)
+const chaveSel = s => s ? (s.tipo === 'manual' ? 'manual|' + s.titulo + '|' + s.empresa + '|' + s.descricao : chaveBusca(s.provedor, s.id)) : null;
+function selecaoValida(s) {   // '' = válida para o contrato de /comparar; senão, o motivo
+  if (!s) return 'não selecionada';
+  if (s.tipo === 'manual') return !s.titulo ? 'falta o título' : !s.descricao ? 'falta a descrição' : '';
+  if (typeof s.id !== 'string' || !s.id.trim()) return 'o identificador do anúncio está ausente';
+  if (s.id.length > LIM.id) return `o identificador do anúncio tem ${s.id.length} caracteres (limite ${LIM.id})`;
+  if (typeof s.consulta !== 'string' || s.consulta.trim().length < 2) return 'a consulta de origem está ausente';
+  if (s.consulta.length > LIM.consulta) return `a consulta de origem tem ${s.consulta.length} caracteres (limite ${LIM.consulta})`;
+  if (!/^[a-z]{2}$/.test(s.pais || '')) return 'o país da busca de origem é inválido';
+  if (!Number.isInteger(s.paginas) || s.paginas < 1 || s.paginas > LIM.paginas) return `o número de páginas da busca de origem é inválido (1 a ${LIM.paginas})`;
+  return '';
+}
+
+function mCriarLado(L) {
+  const U = L.toUpperCase(), box = el('section', 'lado'), m = {busca: {}, manual: {}};
+  box.appendChild(el('span', 'tag', 'Vaga ' + U));
+  const modo = el('select'); modo.id = `m-${L}-modo`; modo.setAttribute('aria-label', `Como escolher a vaga ${U}`);
+  modo.append(new Option('Buscar uma vaga', 'busca'), new Option('Inserir manualmente', 'manual'));
+  box.appendChild(modo);
+  // busca
+  const pb = el('div'); pb.style.cssText = 'display:flex;flex-direction:column;gap:8px';
+  m.busca.consulta = el('input'); m.busca.consulta.id = `m-${L}-consulta`; m.busca.consulta.placeholder = 'Cargo ou consulta (ex.: Desenvolvedor Back-end)'; m.busca.consulta.maxLength = 200; m.busca.consulta.setAttribute('aria-label', `Consulta da vaga ${U}`);
+  m.busca.paginas = el('select'); m.busca.paginas.id = `m-${L}-paginas`; m.busca.paginas.setAttribute('aria-label', `Páginas da consulta da vaga ${U}`);
+  [1, 2, 3].forEach(n => m.busca.paginas.appendChild(new Option(n + ' página(s)', String(n))));
+  m.busca.est = el('p', 'nota'); m.busca.est.id = `m-${L}-est`;
+  m.busca.btn = el('button', null, 'Buscar vagas'); m.busca.btn.type = 'button'; m.busca.btn.id = `m-${L}-buscar`;
+  m.busca.msg = el('p', 'nota'); m.busca.msg.id = `m-${L}-busca-msg`;
+  m.busca.lista = el('div', 'res'); m.busca.lista.id = `m-${L}-lista`;
+  pb.append(m.busca.consulta, m.busca.paginas, m.busca.est, m.busca.btn, m.busca.msg, m.busca.lista);
+  // manual
+  const pm = el('div'); pm.style.cssText = 'display:none;flex-direction:column;gap:8px';
+  m.manual.titulo = el('input'); m.manual.titulo.id = `m-${L}-titulo`; m.manual.titulo.placeholder = 'Título da vaga *'; m.manual.titulo.setAttribute('aria-label', `Título da vaga ${U}`);
+  m.manual.empresa = el('input'); m.manual.empresa.id = `m-${L}-empresa`; m.manual.empresa.placeholder = 'Empresa (opcional)'; m.manual.empresa.setAttribute('aria-label', `Empresa da vaga ${U}`);
+  m.manual.link = el('input'); m.manual.link.id = `m-${L}-link`; m.manual.link.placeholder = 'Link original (opcional; só é exibido, nunca acessado)'; m.manual.link.setAttribute('aria-label', `Link da vaga ${U}`);
+  m.manual.descricao = el('textarea'); m.manual.descricao.id = `m-${L}-descricao`; m.manual.descricao.placeholder = 'Cole aqui a descrição da vaga *'; m.manual.descricao.setAttribute('aria-label', `Descrição da vaga ${U}`);
+  m.manual.cont = el('p', 'nota'); m.manual.cont.id = `m-${L}-cont`;
+  m.manual.btn = el('button', null, 'Usar esta vaga'); m.manual.btn.type = 'button'; m.manual.btn.id = `m-${L}-usar`;
+  m.manual.msg = el('p', 'nota'); m.manual.msg.id = `m-${L}-manual-msg`;
+  pm.append(m.manual.titulo, m.manual.empresa, m.manual.link, m.manual.descricao, m.manual.cont, m.manual.btn, m.manual.msg);
+  box.append(pb, pm);
+  m.sel = el('div'); m.sel.id = `m-${L}-sel`;
+  box.appendChild(m.sel);
+  modo.onchange = () => { pb.style.display = modo.value === 'busca' ? 'flex' : 'none'; pm.style.display = modo.value === 'manual' ? 'flex' : 'none'; };
+  Object.assign(m, {box, modo, buscaSeq: 0, buscando: false, planoSeq: 0, timer: null});
+  m.busca.btn.onclick = () => mBuscar(L);
+  m.busca.consulta.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); mBuscar(L); } });
+  m.busca.consulta.addEventListener('input', () => { clearTimeout(m.timer); m.timer = setTimeout(() => mPlano(L), 250); });
+  m.busca.paginas.onchange = () => mPlano(L);
+  m.manual.btn.onclick = () => mUsarManual(L);
+  m.manual.descricao.addEventListener('input', () => { m.manual.cont.textContent = `${m.manual.descricao.value.length}/${LIM.descricao} caracteres`; });
+  m.manual.cont.textContent = `0/${LIM.descricao} caracteres`;
+  return m;
+}
+async function mPlano(L) {
+  const m = MS[L], meu = ++m.planoSeq, c = m.busca.consulta.value.trim();
+  if (c.length < 2) { m.busca.est.textContent = 'Nenhuma requisição é feita até você clicar em Buscar.'; return; }
+  try {
+    const r = await fetch('/comparar/plano', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({consulta: c, paginas: +m.busca.paginas.value})});
+    if (!r.ok) throw new Error(await pErroDe(r));
+    const p = await r.json();
+    if (meu !== m.planoSeq) return;
+    m.busca.est.textContent = `Esta busca usa até ${p.requisicoes_max} requisição(ões) (páginas em cache, válidas por ${p.cache_ttl_horas} h, não gastam). Cota usada: ${p.usado}/${p.limite}.` + (p.credenciais ? '' : ' Atenção: faltam as credenciais do provedor de vagas no .env.');
+  } catch (err) { if (meu === m.planoSeq) m.busca.est.textContent = ''; }
+}
+async function mBuscar(L) {
+  const m = MS[L];
+  if (m.buscando) return;
+  const consulta = m.busca.consulta.value.trim();
+  if (consulta.length < 2) { m.busca.msg.textContent = 'Informe um cargo ou consulta para buscar vagas.'; return; }
+  const meu = ++m.buscaSeq;
+  m.buscando = true; m.busca.btn.disabled = true; m.busca.lista.replaceChildren();
+  m.busca.msg.textContent = 'Buscando vagas…';
+  try {
+    const r = await fetch('/comparar/buscar', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({consulta, paginas: +m.busca.paginas.value})});
+    if (!r.ok) throw new Error(await pErroDe(r));
+    const d = await r.json();
+    if (meu !== m.buscaSeq) return;                       // resposta antiga nunca sobrescreve uma busca mais nova deste lado
+    m.busca.msg.textContent = d.vagas.length
+      ? `${d.vagas.length} vaga(s) encontrada(s) · ${d.requisicoes_feitas} requisição(ões) usada(s), ${d.do_cache} página(s) do cache.` + (d.avisos.length ? ' ' + d.avisos.join(' ') : '')
+      : 'Nenhuma vaga encontrada para essa consulta.';
+    d.vagas.forEach(v => {
+      const o = el('div', 'opcao');
+      o.appendChild(el('strong', null, v.titulo || '(sem título)'));
+      o.appendChild(el('span', 'sub', [v.empresa, v.local].filter(Boolean).join(' · ') || 'Empresa não informada'));
+      if (!v.tem_descricao) o.appendChild(el('span', 'aviso', 'Sem descrição: só será possível ver os dados de identificação.'));
+      else if (v.descricao_resumo) o.appendChild(el('span', 'aviso', 'O provedor devolve só um trecho da descrição.'));
+      const b = el('button', 'sec', 'Selecionar'); b.type = 'button'; b.style.margin = '0';
+      b.setAttribute('aria-label', `Selecionar ${v.titulo} como vaga ${L.toUpperCase()}`);
+      b.onclick = () => cmpDefinir(L, {tipo: 'busca', ...d.ref, id: v.id, provedor: v.provedor || null, resumo: v});
+      o.appendChild(b);
+      m.busca.lista.appendChild(o);
+    });
+  } catch (err) {
+    if (meu === m.buscaSeq) m.busca.msg.textContent = 'Não foi possível buscar: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message);
+  } finally { if (meu === m.buscaSeq) { m.buscando = false; m.busca.btn.disabled = false; } }
+}
+function mUsarManual(L) {
+  const m = MS[L], t = m.manual.titulo.value.trim(), e = m.manual.empresa.value.trim(), k = m.manual.link.value.trim(), d = m.manual.descricao.value.trim();
+  const erro = !t ? 'Informe o título da vaga.' : !d ? 'Cole a descrição da vaga.' : t.length > LIM.titulo ? `O título pode ter no máximo ${LIM.titulo} caracteres.`
+    : e.length > LIM.empresa ? `A empresa pode ter no máximo ${LIM.empresa} caracteres.` : d.length > LIM.descricao ? `A descrição pode ter no máximo ${LIM.descricao} caracteres (atual: ${d.length}).`
+    : (k && (k.length > LIM.link || !/^https?:\/\//i.test(k))) ? 'O link deve começar com http:// ou https://.' : '';
+  if (erro) { m.manual.msg.textContent = erro; return; }
+  m.manual.msg.textContent = '';
+  cmpDefinir(L, {tipo: 'manual', titulo: t, empresa: e, link: k, descricao: d, resumo: {titulo: t, empresa: e, local: null, link: k || null, provedor: null, tem_descricao: true}});
+}
+function cmpDefinir(L, sel) {
+  CMP[L] = sel;
+  CMP.seq++;                                              // qualquer mudança invalida resultados e respostas pendentes da comparação anterior
+  $h('m-resultado').hidden = true; $h('m-resultado').replaceChildren();
+  mMsg('');
+  mDesenharSelecao(L); mEstado();                         // mEstado também atualiza a barra e os botões da tela de habilidades
+}
+function mDesenharSelecao(L) {
+  const m = MS[L], sel = CMP[L], box = m.sel;
+  box.replaceChildren();
+  if (!sel) { box.appendChild(el('p', 'vazio', `Vaga ${L.toUpperCase()} ainda não selecionada.`)); return; }
+  const r = sel.resumo, card = el('div', 'opcao');
+  card.appendChild(el('span', 'tag', `Vaga ${L.toUpperCase()} selecionada`));
+  card.appendChild(el('strong', null, r.titulo || '(sem título)'));
+  card.appendChild(el('span', 'sub', [r.empresa, r.local].filter(Boolean).join(' · ') || 'Empresa não informada'));
+  card.appendChild(el('span', 'sub', sel.tipo === 'manual' ? 'Inserida manualmente: texto digitado por você, não verificado por um provedor.' : 'Anúncio de um provedor de vagas.'));
+  if (r.link && linkSeguro(r.link)) { const a = el('a', null, 'Abrir anúncio original'); a.href = r.link; a.target = '_blank'; a.rel = 'noopener noreferrer'; card.appendChild(a); }
+  if (r.tem_descricao === false) card.appendChild(el('span', 'aviso', 'Sem descrição: a análise de requisitos não será possível.'));
+  const x = el('button', 'sec', 'Remover seleção'); x.type = 'button'; x.style.margin = '0';
+  x.onclick = () => cmpDefinir(L, null);
+  card.appendChild(x);
+  box.appendChild(card);
+}
+function mEstadoInfo() {
+  const a = CMP.a, b = CMP.b;
+  if (!a && !b) return {texto: 'Nenhuma vaga selecionada. Escolha a vaga A e a vaga B.', pronto: false};
+  if (!a || !b) return {texto: `Somente a vaga ${a ? 'A' : 'B'} selecionada. Falta escolher a vaga ${a ? 'B' : 'A'}.`, pronto: false};
+  const erros = [['A', selecaoValida(a)], ['B', selecaoValida(b)]].filter(e => e[1]).map(e => `vaga ${e[0]}: ${e[1]}`);
+  if (erros.length) return {texto: 'Seleção inválida para comparar (' + erros.join('; ') + '). Escolha o anúncio novamente.', pronto: false};
+  if (chaveSel(a) === chaveSel(b)) return {texto: 'As duas seleções são o mesmo anúncio. Escolha duas vagas diferentes.', pronto: false};
+  return {texto: 'Duas vagas selecionadas: pronto para comparar.', pronto: true};
+}
+function mEstado() {
+  const info = mEstadoInfo();
+  $h('m-estado').textContent = info.texto;
+  $h('m-comparar').disabled = !info.pronto || CMP.comparando;
+  hSelecaoAtualizar(info);
+}
+const payloadSel = s => s.tipo === 'manual' ? {tipo: 'manual', titulo: s.titulo, empresa: s.empresa, link: s.link, descricao: s.descricao}
+  : {tipo: 'busca', consulta: s.consulta, pais: s.pais, paginas: s.paginas, id: s.id};
+
+async function mComparar() {
+  if (CMP.comparando || !CMP.a || !CMP.b) return;
+  const meu = ++CMP.seq, a = CMP.a, b = CMP.b;
+  const token = SESS.token;
+  CMP.comparando = true; mEstado();
+  $h('m-resultado').hidden = true; $h('m-resultado').replaceChildren();   // nada da comparação anterior fica na tela
+  mMsg('Comparação em andamento… carregando e analisando as duas vagas.');
+  try {
+    const sid = await sGarantir(`${a.resumo.titulo || 'Vaga A'} × ${b.resumo.titulo || 'Vaga B'}`);
+    if (token !== SESS.token) return;
+    const r = await fetch('/comparar', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({a: payloadSel(a), b: payloadSel(b), ...sCampos(sid)})});
+    if (!r.ok) throw new Error(await pErroDe(r));
+    const d = await r.json();
+    if (token !== SESS.token) { sAvisoTardio(`${a.resumo.titulo || 'Vaga A'} × ${b.resumo.titulo || 'Vaga B'}`, d); return; }
+    if (meu !== CMP.seq) return;                          // as seleções mudaram enquanto esperava: descarta
+    mRenderizar(d);
+    mMsg(d.estado === 'completa' ? 'Comparação concluída.' : 'Comparação parcial: veja os avisos.', d.estado === 'completa' ? 'ok' : '');
+    insDefinir('cmp', d.insights);
+    sAposInteracao(d);
+  } catch (err) {
+    if (meu === CMP.seq && token === SESS.token) mMsg('Não foi possível comparar: ' + (err.name === 'TypeError' ? 'falha de conexão com o servidor.' : err.message), 'erro');
+  } finally { if (token === SESS.token) { CMP.comparando = false; mEstado(); } }
+}
+function lista(box, itens, vazio) {
+  if (!itens.length) { box.appendChild(el('p', 'vazio', vazio)); return; }
+  const ul = el('ul'); itens.forEach(t => ul.appendChild(el('li', null, t))); box.appendChild(ul);
+}
+const CAT = {obrigatoria: 'obrigatória', diferencial: 'desejável', nao_classificada: 'classificação desconhecida'};
+function cartaoAnalise(L, an) {
+  const U = L.toUpperCase(), c = el('div', 'vaga'), id = an.identidade;
+  c.appendChild(el('span', 'tag', 'Vaga ' + U));
+  if (an.status === 'falha_ao_carregar') {
+    c.appendChild(el('p', 'aviso', `Não foi possível carregar esta vaga: ${an.motivo}`));
+    return c;
+  }
+  const h = el('h3');
+  if (id.link && linkSeguro(id.link)) { const a = el('a', null, id.titulo || '(sem título)'); a.href = id.link; a.target = '_blank'; a.rel = 'noopener noreferrer'; h.appendChild(a); }
+  else h.textContent = (id.titulo || '(sem título)') + (id.link ? '' : ' (sem link original)');
+  c.appendChild(h);
+  c.appendChild(el('p', 'sub', [id.empresa, id.local].filter(Boolean).join(' · ') || 'Empresa/local não informados'));
+  c.appendChild(el('p', 'sub', (id.origem === 'manual' ? 'Inserida manualmente (não verificada)' : `Provedor: ${id.provedor || 'desconhecido'}`)
+    + ` · publicada: ${id.publicada_em || 'não informada'} · carregada em ${id.obtida_em || '—'} · descrição: ${id.descricao_chars} caracteres`));
+  an.limitacoes.forEach(t => c.appendChild(el('p', 'aviso', t)));
+  const sen = an.senioridade;
+  c.appendChild(el('p', 'rotulo', 'Senioridade'));
+  c.appendChild(el('p', null, sen.nivel === 'nao_classificado' ? `Não identificada. ${sen.motivo}` : `${sen.rotulo} (${sen.origem === 'explicita' ? 'explícita' : 'inferida'}). ${sen.motivo}`));
+  c.appendChild(el('p', 'rotulo', 'Experiência mínima'));
+  c.appendChild(el('p', null, an.experiencia.min === null ? 'Não identificada na descrição.' : `${an.experiencia.min} ano(s)` + (an.experiencia.valores.length > 1 ? ` (valores citados: ${an.experiencia.valores.join(', ')})` : '')));
+  [['obrigatorios', 'Requisitos obrigatórios', 'ok'], ['diferenciais', 'Diferenciais desejáveis', ''], ['nao_classificados', 'Citadas sem classificação (obrigatória ou não: desconhecido)', 'falta']].forEach(([k, rot, cls]) => {
+    const itens = an.requisitos[k]; if (!itens.length) return;
+    c.appendChild(el('p', 'rotulo', rot));
+    const box = el('div', 'chips'); itens.forEach(i => box.appendChild(el('span', 'chip ' + cls, i.nome))); c.appendChild(box);
+  });
+  if (!an.requisitos.obrigatorios.length && !an.requisitos.diferenciais.length && !an.requisitos.nao_classificados.length) c.appendChild(el('p', 'vazio', 'Nenhuma habilidade técnica identificada.'));
+  if (an.soft_skills.length) { c.appendChild(el('p', 'rotulo', 'Soft skills citadas')); const box = el('div', 'chips'); an.soft_skills.forEach(n => box.appendChild(el('span', 'chip', n))); c.appendChild(box); }
+  c.appendChild(el('p', 'rotulo', 'Responsabilidades principais (citadas no texto)'));
+  lista(c, an.responsabilidades.map(r => r.rotulo), 'Nenhuma identificada no texto.');
+  c.appendChild(el('p', 'rotulo', 'Formação e certificações'));
+  lista(c, [...an.formacao.map(f => f.rotulo), ...an.certificacoes.map(f => 'Certificação: ' + f.rotulo)], 'Não identificadas na descrição.');
+  if (an.outros.length) { c.appendChild(el('p', 'rotulo', 'Outros requisitos citados')); lista(c, an.outros.map(o => o.rotulo), ''); }
+  const co = an.compatibilidade;
+  c.appendChild(el('p', 'rotulo', 'Compatibilidade estimada com o seu perfil'));
+  if (co.disponivel) {
+    c.appendChild(el('span', 'badge', `≈ ${Math.round(co.compatibilidade)}% dos requisitos identificados constam no seu perfil`));
+    c.appendChild(el('p', 'sub', `${co.obrigatorios_correspondidos}/${co.obrigatorios_total} obrigatórios · ${co.diferenciais_correspondidos}/${co.diferenciais_total} diferenciais`
+      + (co.confianca === 'baixa' ? ' · pouca base para a nota' : '') + '. É uma estimativa de cobertura; não indica qual vaga é melhor.'));
+    if (co.correspondencias.length) { c.appendChild(el('p', 'rotulo', 'Está no seu perfil')); c.appendChild(hChips(co.correspondencias, 'ok')); }
+    if (co.faltando_obrigatorios.length) { c.appendChild(el('p', 'rotulo', 'Obrigatórios ainda não cadastrados no perfil')); c.appendChild(hChips(co.faltando_obrigatorios, 'falta')); }
+    if (co.faltando_diferenciais.length) { c.appendChild(el('p', 'rotulo', 'Diferenciais ainda não cadastrados no perfil')); c.appendChild(hChips(co.faltando_diferenciais, 'falta')); }
+    co.avisos.forEach(t => c.appendChild(el('p', 'aviso', t)));
+  } else c.appendChild(el('span', 'badge nd', 'Sem pontuação: ' + (co.motivo || (co.avisos || []).join(' ') || 'dados insuficientes')));
+  const ev = el('details'); ev.appendChild(el('summary', null, 'Evidências no texto original'));
+  const evs = [...an.requisitos.obrigatorios, ...an.requisitos.diferenciais, ...an.requisitos.nao_classificados].map(i => [i.nome, i.evidencia])
+    .concat(an.responsabilidades.map(r => [r.rotulo, r.evidencia]), an.formacao.map(r => [r.rotulo, r.evidencia]), an.certificacoes.map(r => [r.rotulo, r.evidencia]));
+  evs.forEach(([n, t]) => { const p = el('p', 'evid'); p.appendChild(el('strong', null, n + ': ')); p.appendChild(document.createTextNode(t || 'trecho não localizado no texto (o requisito veio da extração)')); ev.appendChild(p); });
+  if (!evs.length) ev.appendChild(el('p', 'vazio', 'Nada a mostrar.'));
+  c.appendChild(ev);
+  const dt = el('details'); dt.appendChild(el('summary', null, 'Descrição original'));
+  dt.appendChild(el('pre', null, an.descricao || '(sem descrição)'));
+  c.appendChild(dt);
+  return c;
+}
+function listaNomes(box, titulo, nomes, vazio) {   // acesso às listas completas que compõem cada contagem do gráfico
+  const det = el('details'); det.appendChild(el('summary', null, `${titulo} (${nomes.length})`));
+  if (nomes.length) { const ul = el('ul'); nomes.forEach(n => ul.appendChild(el('li', null, n))); det.appendChild(ul); } else det.appendChild(el('p', 'vazio', vazio || 'Nenhuma.'));
+  box.appendChild(det);
+}
+const compatValida = x => !!(x && x.compatibilidade && x.compatibilidade.disponivel && typeof x.compatibilidade.compatibilidade === 'number');
+const motivoCompat = x => ((x && x.compatibilidade) ? (x.compatibilidade.motivo || (x.compatibilidade.avisos || []).join(' ') || 'dados insuficientes') : 'a vaga não foi carregada').replace(/[.\s]+$/, '');
+const N_HAB = n => `${n} habilidade(s)`;
+// Gráficos da comparação: só desenham números estruturados já calculados pelo backend (contagens, compatibilidade, experiência).
+// Cores de identidade fixas: vaga A = c-a (azul), vaga B = c-b (amarelo), em comum = c-comum (verde). Dado ausente nunca vira zero.
+function mGraficos(card, d) {
+  const comp = d.comparacao, a = d.a, b = d.b, sec = el('div');
+  sec.appendChild(el('h4', null, 'Comparação em gráficos'));
+  sec.appendChild(el('p', 'nota', 'Cores: vaga A em azul, vaga B em laranja, habilidades em comum em verde. Os gráficos usam os mesmos dados das listas e tabelas abaixo; nomes e trechos continuam no texto.'));
+  if (comp.disponivel) {
+    const h = comp.habilidades, c = h.contagens, limA = comp.confianca_ausencia.a === 'baixa', limB = comp.confianca_ausencia.b === 'baixa';
+    if (c.total_distintas > 0) {
+      graficoBarras(sec, {titulo: 'Habilidades identificadas: em comum e específicas', max: c.total_distintas, textoAlt: false,
+        subtitulo: `${c.total_distintas} habilidades distintas no total (vaga A: ${c.total_a}; vaga B: ${c.total_b}). Cada habilidade está em uma só categoria; barras na escala do total. "Identificada só em uma vaga" não prova que a outra não a exige.`,
+        itens: [
+          {nome: 'Identificadas nas duas vagas', valor: c.comuns, texto: N_HAB(c.comuns), segmentos: [{parte: 1, cls: 'c-comum'}]},
+          {nome: 'Identificadas só na vaga A' + (limB ? ' (a análise da B é limitada: pode ser omissão)' : ''), valor: c.so_a, texto: N_HAB(c.so_a), segmentos: [{parte: 1, cls: 'c-a'}]},
+          {nome: 'Identificadas só na vaga B' + (limA ? ' (a análise da A é limitada: pode ser omissão)' : ''), valor: c.so_b, texto: N_HAB(c.so_b), segmentos: [{parte: 1, cls: 'c-b'}]}]});
+      if (limA || limB) sec.appendChild(el('p', 'aviso', `Atenção: a análise da(s) vaga(s) ${[limA && 'A', limB && 'B'].filter(Boolean).join(' e ')} é limitada (descrição curta, trecho parcial, IA indisponível ou sem tecnologias). As contagens de "só na outra vaga" podem refletir omissões.`));
+      listaNomes(sec, 'Habilidades em comum', h.comuns.map(i => i.nome), 'Nenhuma habilidade em comum identificada.');
+      listaNomes(sec, 'Identificadas só na vaga A', h.so_a.map(i => `${i.nome} (${CAT[i.categoria_a]})`));
+      listaNomes(sec, 'Identificadas só na vaga B', h.so_b.map(i => `${i.nome} (${CAT[i.categoria_b]})`));
+      listaNomes(sec, 'Correspondência não determinada: relacionadas, mas distintas', h.relacionadas.map(r => `${r.a} (A) × ${r.b} (B): ${r.motivo}`), 'Nenhuma.');
+    } else sec.appendChild(el('p', 'nota', 'Nenhuma habilidade técnica foi identificada nas duas vagas: o gráfico de habilidades foi omitido.'));
+    const ca = a.contagens, cb = b.contagens;
+    if (ca && cb && ca.total + cb.total > 0) {
+      const grupos = [['Requisitos obrigatórios', 'obrigatorios'], ['Diferenciais desejáveis', 'diferenciais']];
+      if (ca.nao_classificados + cb.nao_classificados > 0) grupos.push(['Citadas sem classificação', 'nao_classificados']);
+      graficoAgrupado(sec, {titulo: 'Requisitos por tipo em cada vaga', max: Math.max(1, ...grupos.flatMap(([, k]) => [ca[k], cb[k]])),
+        subtitulo: 'Quantidade de habilidades distintas por tipo. A quantidade de requisitos não mede dificuldade, qualidade nem senioridade da vaga.',
+        series: [{rotulo: 'Vaga A', cls: 'c-a'}, {rotulo: 'Vaga B', cls: 'c-b'}],
+        itens: grupos.map(([nome, k]) => ({nome, valores: [{valor: ca[k], texto: N_HAB(ca[k])}, {valor: cb[k], texto: N_HAB(cb[k])}]}))});
+      if (ca.nao_classificados + cb.nao_classificados > 0) sec.appendChild(el('p', 'nota', '"Sem classificação": habilidades citadas sem marcação de obrigatória ou desejável no anúncio; não foram contadas como obrigatórias nem como diferenciais.'));
+    }
+  } else sec.appendChild(el('p', 'nota', 'Gráficos de habilidades e de requisitos omitidos: ' + comp.motivo));
+  const vs = [['A', a, 'c-a'], ['B', b, 'c-b']];
+  const comCompat = vs.filter(([, x]) => compatValida(x));
+  if (comCompat.length) {
+    graficoBarras(sec, {titulo: 'Compatibilidade estimada com o seu perfil', max: 100,
+      subtitulo: 'Cobertura estimada dos requisitos identificados, calculada pela mesma fórmula do JobInsight (obrigatórios pesam mais que diferenciais); escala de 0% a 100%. Não é chance de contratação e não indica qual vaga é melhor.',
+      itens: comCompat.map(([L, x, cls]) => { const co = x.compatibilidade; return {nome: `Vaga ${L}`, valor: co.compatibilidade, texto: `≈ ${Math.round(co.compatibilidade)}%`,
+        detalhe: `${co.obrigatorios_correspondidos}/${co.obrigatorios_total} obrigatórios · ${co.diferenciais_correspondidos}/${co.diferenciais_total} diferenciais` + (co.confianca === 'baixa' ? ' · pouca base para a nota' : ''), segmentos: [{parte: 1, cls}]}; })});
+    vs.filter(([, x]) => !compatValida(x)).forEach(([L, x]) => sec.appendChild(el('p', 'aviso', `Vaga ${L} sem pontuação (não é zero): ${motivoCompat(x)}. Não há comparação quantitativa entre as duas.`)));
+  } else sec.appendChild(el('p', 'nota', `Gráfico de compatibilidade omitido: vaga A: ${motivoCompat(a)}; vaga B: ${motivoCompat(b)}.`));
+  const ex = comp.disponivel ? comp.experiencia : null;
+  if (ex && ex.comparavel) graficoBarras(sec, {titulo: 'Experiência mínima citada (anos)', max: Math.max(1, ex.a, ex.b),
+    subtitulo: 'Anos mínimos de experiência identificados em cada anúncio, na mesma escala (o maior valor ocupa a barra inteira). Só aparece quando as duas vagas informam o valor.',
+    itens: [{nome: 'Vaga A', valor: ex.a, texto: `${ex.a} ano(s)`, segmentos: [{parte: 1, cls: 'c-a'}]}, {nome: 'Vaga B', valor: ex.b, texto: `${ex.b} ano(s)`, segmentos: [{parte: 1, cls: 'c-b'}]}]});
+  else if (ex) sec.appendChild(el('p', 'nota', 'Gráfico de experiência omitido: ' + ex.texto));
+  card.appendChild(sec);
+}
+function mRenderizar(d) {
+  const box = $h('m-resultado'); box.replaceChildren(); box.hidden = false;
+  const card = el('div', 'card'); box.appendChild(card);
+  card.appendChild(el('h3', null, d.estado === 'completa' ? 'Resultado da comparação' : 'Resultado parcial da comparação'));
+  if (d.estado !== 'completa') card.appendChild(el('p', 'aviso', 'Atenção: esta comparação está incompleta; não a trate como completa.'));
+  d.avisos.forEach(a => card.appendChild(el('p', 'aviso', a)));
+  card.appendChild(el('p', 'nota', d.requisicoes_feitas === 0
+    ? (d.todo_do_cache ? `Vagas vindas do cache (válido por até ${d.cache_ttl_horas} h): nenhuma requisição nova. Cota usada: ${d.usado}/${d.limite}.` : 'Nenhuma requisição ao provedor foi necessária.')
+    : `${d.requisicoes_feitas} requisição(ões) usada(s) para carregar as vagas. Cota usada: ${d.usado}/${d.limite}.`));
+  const s = d.sintese;
+  if (s) {
+    card.appendChild(el('h4', null, 'Síntese'));
+    card.appendChild(el('p', 'rotulo', 'Principais semelhanças')); lista(card, s.semelhancas, 'Não foi possível identificar semelhanças com os dados disponíveis.');
+    card.appendChild(el('p', 'rotulo', 'Diferenças mais relevantes')); lista(card, s.diferencas, 'Sem diferenças relevantes identificadas.');
+    card.appendChild(el('p', 'rotulo', 'O que cada vaga exige de forma específica (identificado só nela)'));
+    lista(card, [`Vaga A: ${s.especificas.a.join(', ') || 'nada específico identificado'}`, `Vaga B: ${s.especificas.b.join(', ') || 'nada específico identificado'}`], '');
+    if (s.indisponivel.length) { card.appendChild(el('p', 'rotulo', 'Informações indisponíveis ou limitadas')); lista(card, s.indisponivel, ''); }
+    card.appendChild(el('p', 'nota', s.nota));
+  }
+  mGraficos(card, d);
+  card.appendChild(el('h4', null, 'Resumo individual'));
+  const duas = el('div', 'duas'); duas.append(cartaoAnalise('a', d.a), cartaoAnalise('b', d.b)); card.appendChild(duas);
+  const comp = d.comparacao;
+  card.appendChild(el('h4', null, 'Comparação consolidada'));
+  if (!comp.disponivel) { card.appendChild(el('p', 'aviso', 'Comparação consolidada indisponível: ' + comp.motivo)); return; }
+  const h = comp.habilidades, conf = comp.confianca_ausencia;
+  const ressalva = (outra, ok) => ok ? '' : ` — a análise da vaga ${outra} é limitada: pode ter sido apenas omitida lá`;
+  card.appendChild(el('p', 'rotulo', 'Habilidades comuns (mesma habilidade após a normalização)'));
+  if (h.comuns.length) card.appendChild(tabela(['Habilidade', 'Na vaga A', 'Na vaga B'], h.comuns.map(i => [i.nome, CAT[i.a], CAT[i.b]]))); else card.appendChild(el('p', 'vazio', 'Nenhuma habilidade em comum identificada.'));
+  card.appendChild(el('p', 'rotulo', 'Identificadas somente na vaga A (não identificadas na descrição da vaga B)'));
+  lista(card, h.so_a.map(i => `${i.nome} (${CAT[i.categoria_a]})${ressalva('B', i.ausencia_confiavel)}`), 'Nenhuma.');
+  card.appendChild(el('p', 'rotulo', 'Identificadas somente na vaga B (não identificadas na descrição da vaga A)'));
+  lista(card, h.so_b.map(i => `${i.nome} (${CAT[i.categoria_b]})${ressalva('A', i.ausencia_confiavel)}`), 'Nenhuma.');
+  if (h.relacionadas.length) { card.appendChild(el('p', 'rotulo', 'Relacionadas, mas distintas (não contam como comuns)')); lista(card, h.relacionadas.map(r => `${r.a} (vaga A) × ${r.b} (vaga B): ${r.motivo}`), ''); }
+  card.appendChild(el('p', 'rotulo', 'Diferenças em requisitos obrigatórios'));
+  const oa = comp.obrigatorios.a_sem_equivalente_obrigatorio_em_b, ob = comp.obrigatorios.b_sem_equivalente_obrigatorio_em_a;
+  lista(card, [...oa.map(i => `Obrigatória na vaga A, sem equivalente obrigatório na B: ${i.nome} — ${i.texto}${i.na_outra === 'nao_identificada' ? ressalva('B', i.ausencia_confiavel) : ''}`),
+               ...ob.map(i => `Obrigatória na vaga B, sem equivalente obrigatório na A: ${i.nome} — ${i.texto}${i.na_outra === 'nao_identificada' ? ressalva('A', i.ausencia_confiavel) : ''}`)], 'Nenhuma diferença identificada nos requisitos obrigatórios.');
+  card.appendChild(el('p', 'rotulo', 'Diferenças em diferenciais desejáveis'));
+  lista(card, [...comp.diferenciais.so_a.map(i => `Desejável na vaga A, não identificada na B: ${i.nome}${ressalva('B', i.ausencia_confiavel)}`),
+               ...comp.diferenciais.so_b.map(i => `Desejável na vaga B, não identificada na A: ${i.nome}${ressalva('A', i.ausencia_confiavel)}`)], 'Nenhuma diferença identificada nos diferenciais.');
+  const rp = comp.responsabilidades;
+  card.appendChild(el('p', 'rotulo', 'Diferenças em responsabilidades (somente as citadas no texto)'));
+  lista(card, [...rp.comuns.map(i => `Em comum: ${i.rotulo}`), ...rp.so_a.map(i => `Só citada na vaga A: ${i.rotulo}`), ...rp.so_b.map(i => `Só citada na vaga B: ${i.rotulo}`)], 'Nenhuma responsabilidade identificada nas duas vagas.');
+  card.appendChild(el('p', 'rotulo', 'Senioridade e experiência'));
+  lista(card, [comp.senioridade.texto, comp.experiencia.texto], '');
+  const f = comp.formacao;
+  card.appendChild(el('p', 'rotulo', 'Formação e certificações'));
+  lista(card, [...f.comuns.map(t => `Em comum: ${t}`), ...f.so_a.map(t => `Só citada na vaga A: ${t}`), ...f.so_b.map(t => `Só citada na vaga B: ${t}`)], 'Nada identificado nas duas vagas.');
+}
+function cmpLimpar() {
+  CMP.a = CMP.b = null; CMP.seq++;
+  ['a', 'b'].forEach(L => {
+    const m = MS[L]; m.buscaSeq++; m.busca.lista.replaceChildren(); m.busca.msg.textContent = '';
+    m.busca.consulta.value = ''; ['titulo', 'empresa', 'link', 'descricao'].forEach(k => { m.manual[k].value = ''; }); m.manual.cont.textContent = `0/${LIM.descricao} caracteres`;
+    mDesenharSelecao(L);
+  });
+  $h('m-resultado').hidden = true; $h('m-resultado').replaceChildren(); mMsg(''); mEstado();
+}
+['a', 'b'].forEach(L => { MS[L] = mCriarLado(L); $h('m-lados').appendChild(MS[L].box); mDesenharSelecao(L); mPlano(L); });
+mEstado();
+$h('m-comparar').onclick = mComparar;
+$h('m-limpar').onclick = cmpLimpar;
+$h('m-voltar').onclick = () => ir('vagas');
+// ---------- Sessões: histórico persistente (o backend é a fonte da verdade; o navegador só guarda o id da conversa ativa) ----------
+const SESS_KEY = 'jobinsight-sessao-ativa', LEGADO_FLAG = 'jobinsight-legado-importado';
+const TIPO_ROT = {chat: 'Busca por cargo', habilidades: 'Por habilidades', evolucao: 'Evolução', comparar: 'Comparação'};
+const SESS = {id: null, titulo: '', interacoes: [], token: 0, ocupado: false, lista: [], listaSeq: 0, criando: null, aberto: false};
+const S = {titulo: $h('s-titulo'), ativa: $h('s-ativa'), input: $h('s-input'), salvarNome: $h('s-salvar-nome'), renomear: $h('s-renomear'), nova: $h('s-nova'),
+  hist: $h('s-hist'), status: $h('s-status'), painel: $h('s-painel'), lista: $h('s-lista'), listaMsg: $h('s-lista-msg'), linha: $h('s-linha'), linhaMsg: $h('s-linha-msg')};
+const sMsg = (t, tipo) => { S.status.textContent = t || ''; S.status.className = tipo || ''; };
+const fData = iso => { try { return new Date(iso).toLocaleString('pt-BR'); } catch { return iso; } };
+const uidNovo = () => { try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch {} return 'ev' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); };
+const sCampos = sid => sid ? {sessao_id: sid, interacao_uid: uidNovo()} : {};   // um uid novo por ação do usuário: repetir de propósito continua possível
+async function sApi(metodo, url, corpo) {
+  try {
+    const r = await fetch(url, {method: metodo, headers: corpo ? {'Content-Type': 'application/json'} : undefined, body: corpo ? JSON.stringify(corpo) : undefined});
+    let dados = null; try { dados = await r.json(); } catch {}
+    return {ok: r.ok, status: r.status, dados, erro: r.ok ? null : (dados && typeof dados.detail === 'string' ? dados.detail : `Erro ${r.status} no servidor.`)};
+  } catch (err) { return {ok: false, status: 0, dados: null, erro: 'falha de conexão com o servidor.'}; }
+}
+function sDesenharBarra() {
+  S.titulo.textContent = SESS.id ? SESS.titulo : 'nenhuma ativa';
+  S.ativa.hidden = !SESS.id;
+  S.renomear.disabled = !SESS.id || SESS.ocupado; S.nova.disabled = SESS.ocupado;
+}
+function sAtivar(sessao, interacoes) {
+  SESS.id = sessao.id; SESS.titulo = sessao.titulo; SESS.interacoes = interacoes || [];
+  try { localStorage.setItem(SESS_KEY, sessao.id); } catch {}
+  sDesenharBarra(); sDesenharLinha();
+}
+function sDesativar() {
+  SESS.id = null; SESS.titulo = ''; SESS.interacoes = [];
+  try { localStorage.removeItem(SESS_KEY); } catch {}
+  sDesenharBarra(); sDesenharLinha();
+}
+// Garante uma conversa ativa para a análise que vai começar (criada e CONFIRMADA pelo backend). null = sem histórico para esta análise.
+function sGarantir() {
+  if (SESS.id) return Promise.resolve(SESS.id);
+  if (!SESS.criando) SESS.criando = (async () => {
+    const r = await sApi('POST', '/sessoes', {});
+    if (!r.ok) { sMsg('Não foi possível criar a conversa no histórico: ' + r.erro + ' A análise será feita, mas não será salva.', 'erro'); return null; }
+    sAtivar(r.dados, []); sCarregarLista();
+    return r.dados.id;
+  })().finally(() => { SESS.criando = null; });
+  return SESS.criando;
+}
+function sResetTelas() {   // cada conversa começa limpa: nada da anterior (consultas, resultados, seleções, carregamentos) fica nas telas
+  insLimpar();
+  [...chat.children].slice(1).forEach(c => c.remove());
+  btn.disabled = false; cancel.hidden = true; ctrl = null;
+  H.resultado.hidden = true; H.resultado.replaceChildren(); H.mais.hidden = true; H.ultima = null; H.paginasCarregadas = 0; H.retornadas = null;
+  H.buscando = false; H.buscar.disabled = false; H.mais.disabled = false; hMsg('');
+  E.resultado.hidden = true; E.resultado.replaceChildren(); E.inicial.hidden = false; E.ocupado = false; E.analisar.disabled = false; eMsg('');
+  CMP.comparando = false; ['a', 'b'].forEach(L => { MS[L].buscando = false; MS[L].busca.btn.disabled = false; }); cmpLimpar();
+}
+// ----- lista e linha do tempo
+async function sCarregarLista() {
+  const meu = ++SESS.listaSeq;
+  S.listaMsg.textContent = 'Carregando histórico…';
+  const r = await sApi('GET', '/sessoes');
+  if (meu !== SESS.listaSeq) return r.ok;
+  if (!r.ok) { S.listaMsg.textContent = 'Não foi possível carregar o histórico: ' + r.erro; return false; }
+  SESS.lista = r.dados.sessoes;
+  const ativa = SESS.lista.find(x => x.id === SESS.id);
+  if (ativa && ativa.titulo !== SESS.titulo) { SESS.titulo = ativa.titulo; sDesenharBarra(); }   // título automático (1ª consulta) ou renomeado
+  sDesenharLista();
+  return true;
+}
+function sDesenharLista() {
+  S.lista.replaceChildren();
+  S.listaMsg.textContent = SESS.lista.length ? '' : 'Nenhuma conversa salva ainda. Use “+ Nova conversa” ou faça uma análise.';
+  SESS.lista.forEach(x => {
+    const li = el('li', 's-item' + (x.id === SESS.id ? ' ativa' : '')), corpo = el('div', 'corpo');
+    if (x.id === SESS.id) li.setAttribute('aria-current', 'true');
+    const t = el('strong', null, x.titulo); if (x.id === SESS.id) t.appendChild(el('span', 's-tipo', 'ativa')).style.marginLeft = '6px';
+    corpo.append(t, el('span', 'meta', `${fData(x.atualizada_em)} · ${x.total_interacoes} análise(s)` + (x.ultimo_resumo ? ` · ${TIPO_ROT[x.ultimo_tipo] || ''}: ${x.ultimo_resumo}` : '')));
+    const abrir = el('button', 'sec', 'Abrir'), apagar = el('button', 'sec', 'Excluir');
+    abrir.type = apagar.type = 'button'; abrir.setAttribute('aria-label', `Abrir a conversa ${x.titulo}`); apagar.setAttribute('aria-label', `Excluir a conversa ${x.titulo}`);
+    abrir.onclick = () => sAbrir(x.id); apagar.onclick = () => sExcluir(x.id, x.titulo);
+    li.append(corpo, abrir, apagar); S.lista.appendChild(li);
+  });
+}
+function sDesenharLinha() {
+  S.linha.replaceChildren();
+  S.linhaMsg.textContent = !SESS.id ? 'Nenhuma conversa ativa.' : (SESS.interacoes.length ? '' : 'Nenhuma análise nesta conversa ainda.');
+  SESS.interacoes.forEach(i => {
+    const li = el('li', 's-item'), corpo = el('div', 'corpo');
+    corpo.append(el('strong', null, i.consulta || '(sem texto)'),
+      el('span', 'meta', `${fData(i.criada_em)} · ${i.resumo || ''}` + (i.status && !['ok', 'completa'].includes(i.status) ? ` · ${i.status}` : '') + (i.aviso ? ` · ${i.aviso}` : '')));
+    const b = el('button', 'sec', 'Abrir'); b.type = 'button'; b.disabled = !i.resultado; b.setAttribute('aria-label', `Abrir a análise ${i.consulta}`);
+    b.onclick = () => sMostrar(i, true);
+    li.append(el('span', 's-tipo', TIPO_ROT[i.tipo] || i.tipo), corpo, b); S.linha.appendChild(li);
+  });
+}
+// ----- reexibir resultados salvos (nunca refazem a pesquisa)
+function bannerSalvo(box, i) {
+  const alvo = box.querySelector(':scope > .card') || box;
+  const p = el('p', 'aviso', `Resultado salvo desta conversa: pesquisa feita em ${fData(i.criada_em)}. Nada foi consultado de novo ao reabrir; para dados atuais, faça uma nova pesquisa.`);
+  p.dataset.salvo = '1'; alvo.insertBefore(p, alvo.firstChild);
+}
+function sChatMensagem(i) {
+  const par = i.parametros || {};
+  add('user').textContent = par.apenas_novas ? `Buscar novas vagas: ${par.mensagem}` : (par.mensagem || i.consulta);
+  const b = add('bot'); b.dataset.iid = String(i.id);
+  const d = i.resultado && i.resultado.dados;
+  if (!d) { b.classList.add('err'); b.textContent = i.aviso || 'Resultado não disponível.'; return; }
+  INS.vagas = i.insights || [];
+  if (d.sem_novas) b.textContent = d.aviso; else { render(b, d); extras(b, d); }
+  b.appendChild(el('p', 'meta', `Resultado salvo: pesquisa de ${fData(i.criada_em)} (dados da conversa; não foi consultado de novo).`));
+}
+function sRenderHab(i) {
+  const d = i.resultado, p = i.parametros || {};
+  hRenderizar(d); INS.hab = i.insights || [];
+  H.ultima = {habilidades: d.habilidades, area: p.area || null}; H.paginasCarregadas = d.paginas; H.retornadas = d.contagens ? d.contagens.retornadas : null; H.mais.hidden = true;
+  bannerSalvo(H.resultado, i); hMsg(`Resultado salvo em ${fData(i.criada_em)}: nada foi consultado de novo.`, 'ok');
+}
+function sRenderEvo(i) {
+  const d = i.resultado, p = i.parametros || {};
+  E.cargo.value = p.cargo || d.cargo || ''; if (p.paginas) E.paginas.value = String(p.paginas);
+  eRenderizar(d); INS.evo = i.insights || []; bannerSalvo(E.resultado, i); eMsg(`Resultado salvo em ${fData(i.criada_em)}: nada foi consultado de novo.`, 'ok');
+}
+function sRenderCmp(i) {
+  const d = i.resultado, p = i.parametros;
+  if (p && p.a && p.b) {   // restaura as duas seleções que originaram esta comparação (só desta conversa)
+    const sel = (par, an) => { const id = an.identidade || {}, resumo = {titulo: id.titulo, empresa: id.empresa, local: id.local, link: id.link, provedor: id.provedor || null, tem_descricao: (id.descricao_chars || 0) > 0};
+      return par.tipo === 'manual' ? {...par, link: par.link || '', empresa: par.empresa || '', resumo} : {...par, provedor: id.provedor || null, resumo}; };
+    CMP.a = sel(p.a, d.a); CMP.b = sel(p.b, d.b); CMP.seq++; mDesenharSelecao('a'); mDesenharSelecao('b'); mEstado();
+  }
+  mRenderizar(d); INS.cmp = i.insights || []; bannerSalvo($h('m-resultado'), i); mMsg(`Resultado salvo em ${fData(i.criada_em)}: nada foi consultado de novo.`, 'ok');
+}
+function sMostrar(i, navegar) {
+  if (!i.resultado) { sMsg(i.aviso || 'Este resultado não está disponível.', 'erro'); return; }
+  if (i.tipo === 'chat') { INS.vagas = i.insights || []; if (navegar) { mostrar('vagas'); const m = chat.querySelector(`[data-iid="${i.id}"]`); if (m && m.scrollIntoView) m.scrollIntoView(); } return; }
+  const [render_, tela] = {habilidades: [sRenderHab, 'hab'], evolucao: [sRenderEvo, 'evo'], comparar: [sRenderCmp, 'cmp']}[i.tipo] || [];
+  if (!render_) return;
+  if (navegar) mostrar(tela);
+  render_(i);
+}
+function sRestaurar() {
+  const ultimos = {};
+  SESS.interacoes.forEach(i => { if (i.tipo === 'chat') sChatMensagem(i); else if (i.resultado) ultimos[i.tipo] = i; });
+  document.querySelectorAll('.novas').forEach((b, k, todos) => { if (k < todos.length - 1) b.remove(); });
+  if (ultimos.habilidades) sRenderHab(ultimos.habilidades);
+  if (ultimos.evolucao) sRenderEvo(ultimos.evolucao);
+  if (ultimos.comparar) sRenderCmp(ultimos.comparar);
+  chat.scrollTop = chat.scrollHeight;
+  insRender();
+}
+// ----- depois de uma análise com sessão
+function sAposInteracao(d, msgEl) {
+  if (d.salvo === false) { sMsg('Atenção: esta análise NÃO foi salva no histórico. ' + (d.aviso_historico || ''), 'erro'); return; }
+  const it = d.interacao; if (!it) return;
+  const {interacao, salvo, aviso_historico, insights, ...resultado} = d;
+  if (msgEl) msgEl.dataset.iid = String(it.id);
+  if (!SESS.interacoes.some(x => x.id === it.id))
+    SESS.interacoes.push({id: it.id, seq: it.seq, tipo: it.tipo, consulta: it.consulta, parametros: null, resultado, insights, resultado_disponivel: it.resultado_guardado !== false,
+      status: it.status, resumo: it.resumo, criada_em: it.criada_em, aviso: it.resultado_guardado === false ? 'resultado grande demais: não guardado' : undefined});
+  if (it.titulo_sessao && it.sessao_id === SESS.id && it.titulo_sessao !== SESS.titulo) { SESS.titulo = it.titulo_sessao; sDesenharBarra(); }   // título automático já na barra
+  sMsg(it.repetida ? 'Evento repetido: o registro já salvo foi reutilizado.' : `Análise salva na conversa (nº ${it.seq}).`, 'ok');
+  sDesenharLinha(); sCarregarLista();
+}
+function sAvisoTardio(rotulo, d) {   // a conversa ativa mudou enquanto a análise rodava: o resultado não entra na conversa nova
+  sMsg(`A análise “${rotulo}” terminou depois que você trocou de conversa. ` + (d.salvo === false ? 'Ela NÃO foi salva: ' + (d.aviso_historico || '') : 'Foi salva na conversa de origem e não entrou nesta.'), d.salvo === false ? 'erro' : '');
+  sCarregarLista();
+}
+// ---------- Etapa 8: tema, painel "O que os dados revelam?" ----------
+// INS[tela]: null = nenhuma análise ainda; [] = análise feita sem insights; lista = insights vindos do backend (nada é calculado aqui).
+const INS = {vagas: null, hab: null, evo: null, cmp: null, perfil: null};
+const INS_DESTINOS = ['vagas', 'hab', 'evo', 'cmp', 'perfil'];
+const APP = document.getElementById('app'), insCorpo = document.getElementById('ins-corpo');
+const insDefinir = (tela, lista) => { INS[tela] = Array.isArray(lista) ? lista : []; insRender(); };
+function insLimpar() { Object.keys(INS).forEach(k => { INS[k] = null; }); insRender(); }
+function insAcao(a) {   // atalhos só navegam; `preencher` só pré-preenche o campo (nunca dispara busca)
+  if (!a || !INS_DESTINOS.includes(a.destino)) return;
+  ir(a.destino);
+  if (telaAtual !== a.destino) return;
+  const p = a.preencher || {};
+  if (a.destino === 'hab' && Array.isArray(p.habilidades) && typeof p.habilidades[0] === 'string') H.input.value = p.habilidades[0];
+  if (a.destino === 'evo' && typeof p.cargo === 'string') E.cargo.value = p.cargo;
+}
+function insRender() {
+  insCorpo.replaceChildren();
+  const lista = INS[telaAtual];
+  if (telaAtual === 'perfil') { insCorpo.appendChild(el('p', 'ins-vazio', 'O perfil não gera insights. Cadastre áreas e habilidades para ver a aderência nas análises.')); return; }
+  if (lista === null || lista === undefined) { insCorpo.appendChild(el('p', 'ins-vazio', 'Nenhuma análise nesta tela ainda. Faça uma busca para ver o que os dados revelam.')); return; }
+  if (!lista.length) { insCorpo.appendChild(el('p', 'ins-vazio', 'Esta análise não trouxe dados suficientes para gerar insights.')); return; }
+  lista.forEach(i => {
+    const c = el('section', 'ins ' + (['destaque', 'info', 'alerta'].includes(i.nivel) ? i.nivel : 'info'));
+    c.appendChild(el('h3', null, i.titulo)); c.appendChild(el('p', null, i.texto));
+    if (i.acao && INS_DESTINOS.includes(i.acao.destino)) { const b = el('button', 'sec', i.acao.rotulo || 'Abrir'); b.type = 'button'; b.onclick = () => insAcao(i.acao); c.appendChild(b); }
+    insCorpo.appendChild(c);
+  });
+}
+function aplicarTema(t, salvar) {
+  document.documentElement.setAttribute('data-tema', t);
+  if (salvar) { try { localStorage.setItem('jobinsight-tema', t); } catch {} }
+  const b = document.getElementById('tema-alt'); b.textContent = t === 'escuro' ? 'Tema claro' : 'Tema escuro'; b.setAttribute('aria-pressed', String(t === 'escuro'));
+}
+document.getElementById('tema-alt').onclick = () => aplicarTema(document.documentElement.getAttribute('data-tema') === 'escuro' ? 'claro' : 'escuro', true);
+aplicarTema(document.documentElement.getAttribute('data-tema') === 'escuro' ? 'escuro' : 'claro', false);
+function painelAlt(attr, aberto, btnId) { APP.dataset[attr] = aberto; document.getElementById(btnId).setAttribute('aria-expanded', String(aberto === 'aberto' || aberto === 'aberta')); }
+document.getElementById('menu-alt').onclick = () => painelAlt('nav', APP.dataset.nav === 'aberta' ? 'fechada' : 'aberta', 'menu-alt');
+document.getElementById('ins-alt').onclick = () => painelAlt('ins', APP.dataset.ins === 'aberto' ? 'fechado' : 'aberto', 'ins-alt');
+if (window.matchMedia && window.matchMedia('(max-width:1100px)').matches) painelAlt('ins', 'fechado', 'ins-alt');
+const latPerfil = nome => { document.getElementById('lat-perfil').textContent = nome && nome.trim() ? 'Perfil: ' + nome.trim() : 'Perfil sem nome'; };
+insRender();
+// ----- ações
+async function sNova() {
+  if (SESS.ocupado) return;
+  SESS.ocupado = true; sDesenharBarra(); sMsg('Criando conversa…');
+  try {
+    const r = await sApi('POST', '/sessoes', {});
+    if (!r.ok) { sMsg('Não foi possível criar a conversa: ' + r.erro + ' Nada foi salvo.', 'erro'); return; }   // confirmação do backend antes de mostrar
+    SESS.token++; sResetTelas(); sAtivar(r.dados, []); mostrar('vagas');
+    sMsg('Nova conversa criada e salva.', 'ok'); sCarregarLista();
+  } finally { SESS.ocupado = false; sDesenharBarra(); }
+}
+async function sAbrir(id) {
+  if (SESS.ocupado) return;
+  SESS.ocupado = true; sDesenharBarra(); sMsg('Abrindo conversa…');
+  try {
+    const r = await sApi('GET', '/sessoes/' + encodeURIComponent(id));
+    if (!r.ok) {   // falha: a conversa atual continua como estava
+      sMsg(r.status === 404 ? 'Conversa não encontrada: ela pode ter sido excluída.' : 'Não foi possível abrir a conversa: ' + r.erro, 'erro');
+      if (r.status === 404) { try { if (localStorage.getItem(SESS_KEY) === id) localStorage.removeItem(SESS_KEY); } catch {} sCarregarLista(); }
+      return;
+    }
+    SESS.token++; sResetTelas(); sAtivar(r.dados.sessao, r.dados.interacoes); sRestaurar();
+    sMsg(`Conversa aberta: ${r.dados.interacoes.length} análise(s) salva(s). Nada foi consultado de novo.`, 'ok'); sCarregarLista();
+  } finally { SESS.ocupado = false; sDesenharBarra(); }
+}
+async function sExcluir(id, titulo) {
+  if (SESS.ocupado) return;
+  if (!confirm(`Excluir a conversa “${titulo}” e as análises salvas nela? Isso não pode ser desfeito (cache, perfil e histórico de vagas não são afetados).`)) return;
+  SESS.ocupado = true; sDesenharBarra(); sMsg('Excluindo…');
+  try {
+    const r = await sApi('DELETE', '/sessoes/' + encodeURIComponent(id));
+    if (!r.ok && r.status !== 404) { sMsg('Não foi possível excluir a conversa: ' + r.erro, 'erro'); return; }
+    if (SESS.id === id) { SESS.token++; sResetTelas(); sDesativar(); }
+    sMsg(r.ok ? 'Conversa excluída.' : 'A conversa já não existia.', 'ok'); sCarregarLista();
+  } finally { SESS.ocupado = false; sDesenharBarra(); }
+}
+async function sSalvarNome() {
+  const id = SESS.id, t = S.input.value.trim();
+  if (!id) return;
+  if (!t) return sMsg('Informe um título para a conversa.', 'erro');
+  S.salvarNome.disabled = true; sMsg('Salvando o nome…');
+  const r = await sApi('PATCH', '/sessoes/' + id, {titulo: t});
+  S.salvarNome.disabled = false;
+  if (!r.ok) return sMsg('Não foi possível renomear: ' + r.erro, 'erro');     // o campo continua aberto para tentar de novo
+  if (SESS.id === id) { SESS.titulo = r.dados.titulo; sDesenharBarra(); }
+  S.input.hidden = S.salvarNome.hidden = true; sMsg('Conversa renomeada.', 'ok'); sCarregarLista();
+}
+S.nova.onclick = sNova;
+S.renomear.onclick = () => { if (!SESS.id) return; S.input.hidden = S.salvarNome.hidden = false; S.input.value = SESS.titulo; S.input.focus(); };
+S.salvarNome.onclick = sSalvarNome;
+S.input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sSalvarNome(); } else if (e.key === 'Escape') { S.input.hidden = S.salvarNome.hidden = true; } });
+S.hist.onclick = () => { SESS.aberto = !SESS.aberto; S.painel.hidden = !SESS.aberto; S.hist.setAttribute('aria-expanded', String(SESS.aberto)); if (SESS.aberto) sCarregarLista(); };
+async function sIniciar() {
+  let importada = null;
+  try {   // 1) histórico antigo do navegador (busca por cargo) vira uma conversa salva, uma única vez
+    const bruto = localStorage.getItem(LEGADO_KEY);
+    if (bruto && !localStorage.getItem(LEGADO_FLAG)) {
+      const itens = JSON.parse(bruto);
+      if (Array.isArray(itens) && itens.length) {
+        const r = await sApi('POST', '/sessoes/importar-legado', {itens});
+        if (r.ok) { localStorage.setItem(LEGADO_FLAG, '1'); importada = r.dados; sMsg('O histórico antigo deste navegador foi importado para uma conversa salva.', 'ok'); }
+        else sMsg('Não foi possível importar o histórico antigo (nova tentativa na próxima abertura): ' + r.erro, 'erro');
+      } else localStorage.setItem(LEGADO_FLAG, '1');
+    }
+  } catch {}
+  const ok = await sCarregarLista();                       // 2) a lista vem do backend
+  let id = null; try { id = localStorage.getItem(SESS_KEY); } catch {}
+  if (!id && importada) id = importada.sessao.id;
+  if (id && (!ok || SESS.lista.some(x => x.id === id))) await sAbrir(id);   // 3) restaura a conversa ativa (também após atualizar a página)
+  else if (id) { try { localStorage.removeItem(SESS_KEY); } catch {} }
+  sDesenharBarra(); sDesenharLinha();
+}
+sDesenharBarra(); sDesenharLinha();
+sIniciar();
 </script>
 </body>
 </html>

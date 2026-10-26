@@ -342,13 +342,14 @@ def test_e6_buscas_anteriores_continuam_funcionando(client, provedor):
 
 
 def test_e7_nada_de_etapas_futuras(client):
+    # Etapa 5 introduziu gráficos nativos (CSS/SVG); continuam proibidos bibliotecas/canvas/CDN, rotas de sessão/histórico e novo sistema de temas
     from pathlib import Path
-    for rota in ("/comparar-vagas", "/comparar", "/sessoes", "/conversas", "/historico", "/graficos"):
+    for rota in ("/conversas", "/historico", "/graficos"):  # "/sessoes" é da Etapa 7  # "/comparar" é da Etapa 4 e passou a existir
         assert client.get(rota).status_code == 404 and client.post(rota, json={}).status_code == 404
     html = (Path(__file__).resolve().parent.parent / "app" / "static" / "index.html").read_text(encoding="utf-8").lower()
     assert "<canvas" not in html and not any(w in html for w in ("chart.js", "d3.js", "plotly", "echarts", "apexcharts", "<svg"))
-    assert "prefers-color-scheme" in html  # tema atual preservado (nenhum seletor de tema novo foi criado)
-    assert "data-theme" not in html and "toggle-tema" not in html
+    assert "data-tema" in html and "prefers-color-scheme" not in html  # Etapa 8: tema por atributo data-tema (claro por padrão)
+    assert "data-theme" not in html
 
 
 def test_e7_resposta_nao_traz_dados_de_comparacao_individual(client, provedor):

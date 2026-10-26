@@ -33,6 +33,16 @@ def _ranking(listas: list[list[str]], total: int, top: int, minimo: int = 1) -> 
     ]
 
 
+ORDEM_NIVEIS = ("estagio", "junior", "pleno", "senior", "lead", "nao_informado")
+
+
+def niveis_detalhe(niveis: dict, total: int) -> list[dict]:
+    """Distribuição por nível pronta para exibir: cada vaga está em um único nível, então as partes somam `total`.
+    Mesma convenção dos rankings (percentual = % das vagas analisadas)."""
+    chaves = sorted(niveis, key=lambda k: (ORDEM_NIVEIS.index(k) if k in ORDEM_NIVEIS else len(ORDEM_NIVEIS), k))
+    return [{"nivel": k, "vagas": niveis[k], "percentual": round(100 * niveis[k] / total)} for k in chaves if niveis[k] > 0]
+
+
 def agregar(extracoes: list[dict], top: int = 15) -> dict:
     n = len(extracoes)
     minimo = 2 if n >= 8 else 1  # esconde termos de uma única vaga em amostras grandes
@@ -43,11 +53,13 @@ def agregar(extracoes: list[dict], top: int = 15) -> dict:
         for e in extracoes
         if isinstance(e.get("anos_experiencia_min"), int)
     ]
+    niveis = dict(Counter(e.get("nivel", "nao_informado") for e in extracoes))
     return {
         "vagas_analisadas": n,
         "tecnologias": _ranking([e.get("tecnologias", []) for e in extracoes], n, top, minimo),
         "diferenciais": _ranking([e.get("diferenciais", []) for e in extracoes], n, top, minimo),
         "soft_skills": _ranking([e.get("soft_skills", []) for e in extracoes], n, 8, minimo),
-        "niveis": dict(Counter(e.get("nivel", "nao_informado") for e in extracoes)),
+        "niveis": niveis,
+        "niveis_detalhe": niveis_detalhe(niveis, n),
         "experiencia_mediana_anos": median(anos) if anos else None,
     }

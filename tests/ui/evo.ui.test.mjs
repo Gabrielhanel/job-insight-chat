@@ -97,7 +97,7 @@ test('análise completa: cobertura, classificação, comparação em p.p., ranki
   await ui.abrirEvo();
   await ui.analisar('Desenvolvedor React Native Alfa');
   assert.equal(ui.status(), 'Análise concluída.');
-  assert.equal(ui.posts().length, 1); assert.deepEqual(ui.posts()[0].corpo, { cargo: 'Desenvolvedor React Native Alfa', paginas: 2 });
+  assert.equal(ui.posts().length, 1); { const { sessao_id, interacao_uid, ...resto } = ui.posts()[0].corpo; assert.deepEqual(resto, { cargo: 'Desenvolvedor React Native Alfa', paginas: 2 }); assert.match(sessao_id, /^[0-9a-f]{32}$/); assert.ok(interacao_uid.length >= 8); }
   assert.equal(ui.$('e-resultado').hidden, false); assert.equal(ui.$('e-inicial').hidden, true);
   const t = ui.texto();
   assert.match(t, /Dados coletados agora: 6 requisição\(ões\) usada\(s\), 0 página\(s\) vieram do cache/);
@@ -120,6 +120,7 @@ test('análise completa: cobertura, classificação, comparação em p.p., ranki
   assert.match(t, /TypeScript: júnior 16\.7% → pleno 40% → sênior 75% \(\+35 p\.p\.\)/);
   assert.match(t, /indicativo: amostra pequena/);
   assert.match(t, /Ganham relevância de júnior para pleno/);
+  assert.match(t, /Aparecem menos de pleno para sênior.*Git: júnior 75% → pleno 70% → sênior 25% \(-45 p\.p\.\)/s);   // queda aparece como queda
   assert.doesNotMatch(t, /exclusiv/i);
   assert.match(t, /Ranking por nível/); assert.match(t, /TypeScript — 40% \(4\/10\) · obrigatória em 4 · diferencial em 0/);
   assert.match(t, /Experiência exigida/); assert.ok(ui.linhas('Pleno').some(r => r.includes('não identificada')));
