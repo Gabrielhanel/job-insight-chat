@@ -1,6 +1,11 @@
 # JobInsight
 
 Chatbot web que, a partir de um cargo ou área, busca vagas relacionadas e mostra os requisitos que mais aparecem nelas, com o percentual de vagas em que cada um é citado.
+
+## Sobre o projeto
+
+> Este projeto foi desenvolvido com vibecoding, utilizando IA como apoio durante o desenvolvimento. A principal proposta foi aprender na prática, especialmente sobre engenharia de prompt, refinamento de instruções e como transformar ideias em funcionalidades reais.
+
 * Algumas funcionalidades inclusas:
   * #### Evolução por senioridade: coleta vagas de júnior, pleno e sênior, classifica cada uma e compara os requisitos entre os níveis.
   ![alt text](assets/image.png)
